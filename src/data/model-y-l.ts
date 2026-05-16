@@ -71,7 +71,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.registration',
           title: '車検証 / 自賠責証明書がグローブボックスに常備されている',
           description:
-            '車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書を物理的に車内 (グローブボックス) に常時携帯することが法律で義務 (道路運送車両法第 66 条)。デジタルのみの納車は不可。VIN・所有者氏名・住所が注文書と一致するか確認。',
+            '車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書が車内 (グローブボックス) に常備されているか確認。道路運送車両法第 66 条で常時携帯が義務付けられており、デジタル管理のみは不可。電子車検証は IC カードのみだと現場では内容を確認できないため、納車担当に専用リーダーまたは「車検証閲覧アプリ」での読み取りを依頼し、VIN・所有者氏名・住所が注文書と一致するかその場で確認すること。',
           severity: 'critical',
         },
         {
@@ -122,7 +122,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.lights',
           title: 'ライト類：ヘッドライト / テールライトの点灯・結露',
           description:
-            'ロー・ハイ・デイライト・ターン・ブレーキ・リバース・リアフォグまで一通り点灯確認。',
+            'ロー・ハイ・デイライト・ターン・ブレーキ・リバース・リアフォグまでひと通り点灯確認。さらにヘッドライト・テールライト内部の結露・曇り (condensation) の有無を念入りに確認すること。Tesla Motors Club と Reddit r/TeslaModelY で頻出する既知不具合で、納車後に発見すると「使用環境による」と判断されて保証対応が長引きがち。少しでも曇りがあればその場で写真・動画を撮影し Due Bill に記載してもらう。',
           severity: 'major',
         },
         {
@@ -136,7 +136,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.windshield',
           title: 'フロント / リアガラス：チップ・線傷',
           description:
-            '輸送中のフライングストーンによるチップに注意。Juniper 以降は全窓に二層遮音ガラス (acoustic) を採用。工場ダッシュカムは無く、Sentry Mode が車載 8 カメラで録画を担当する。',
+            '輸送中のフライングストーンによるチップに注意。Juniper 以降は全窓に二層遮音ガラス (acoustic) を採用。工場出荷時のダッシュカムは搭載されておらず、Sentry Mode が車載 8 カメラで録画を行います。',
           severity: 'major',
         },
         {
@@ -220,14 +220,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.frame-alignment',
           title: 'フレーム・ピラー整合 (対角線チェック・オーナー実施)',
           description:
-            'ドア開口部の対角線 (左上⇄右下、右上⇄左下) をメジャーで計測し、差が 5 mm 以内か確認。大きなずれはフレーム歪みの可能性あり最重要欠陥。Tesla 納車プロセスにはこの確認は含まれないため、オーナー自身か第三者の验车师 (検車サービス) が実施する。',
+            '4 枚のドア開口部それぞれで、対角線 (左上⇄右下、右上⇄左下) を金属メジャーで計測し、左右の差が 5 mm 以内か確認。計測点はドア開口部の角 (ウェザーストリップの内側、ピラーとシルが交わるコーナー部) を左右同じ位置に揃えるのがコツ。Tesla の納車プロセスにはこの計測は含まれないため、オーナー自身または第三者の納車検査サービスが実施する。差が 5 mm を超える場合はフレーム歪みの可能性があり、最重要欠陥として写真記録した上で受領前に必ず指摘すること。',
           severity: 'critical',
         },
         {
           id: 'ext.paint',
           title: '左右サイドの塗装：傷・色ムラ・ピンホール',
           description:
-            '太陽光または LED 直下で全パネルを 45° 角度で目視。orange peel (梨地) は爪で引っかかるレベルなら service eligible。Pearl White は汚れや擦り傷が目立ちやすく、Cosmic Silver や暗色は orange peel そのものが目立ちやすい。',
+            '太陽光または LED 直下で全パネルを 45° の角度で目視。orange peel (梨地) は爪で引っかかるレベルなら修理対象。Pearl White は汚れや擦り傷が目立ちやすく、Cosmic Silver や暗色は orange peel 自体が目立ちやすい。',
           severity: 'major',
         },
         {
@@ -475,7 +475,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.12v-battery-health',
           title: '12V (補機) バッテリーの警告灯・電圧確認',
           description:
-            'Controls ▸ Service ▸ Electrical を開き、12V (補機) バッテリー電圧が 12.6 V 以上あるか、オレンジ色の警告アイコンがないかを確認。低電圧警告はランダムな異常挙動の原因になるため要確認。所要 1 分。',
+            'Controls ▸ Service ▸ Electrical を開き、12V (補機) バッテリー電圧が 12.6 V 以上あるか、オレンジ色の警告アイコンが点灯していないかを確認。12.3 V を下回る場合は要交換レベル。TMC では「納車直後にドアが内側から開かない」「タッチスクリーンが起動しない」「Sentry Mode で残量が急減」など 12V 由来のトラブルが報告されており、初期不良の温床として要注意。所要 1 分。',
           severity: 'critical',
         },
         {
@@ -538,7 +538,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.cameras',
           title: 'カメラ：全方位映像の歪み / 汚れ (HW4 / 9 カメラ)',
           description:
-            'Model Y L は Hardware 4 (AI4) を搭載し物理カメラは 9 個 (スクリーン上は 8 方位表示)。Camera ビューで全角度の鮮明度を確認。B ピラーのリピーターカメラ内部結露は既知欠陥なので特に注意。',
+            'Model Y L は Hardware 4 (AI4) を搭載し、物理カメラは 9 個 (スクリーン上は 8 方位表示)。Controls ▸ Service ▸ Camera で全角度の映像を表示させ、ぼやけ・歪み・汚れがないかを確認。特に左右 B ピラーのリピーターカメラは内部結露 (condensation) が既知の欠陥で TMC / Reddit に多数報告あり。映像が曇って見える、または外からレンズを覗いて内部に水滴・霧が見える場合は保証修理対象なのでその場で指摘し、写真を Due Bill に添付すること。所要 3 分。',
           severity: 'major',
         },
         {
