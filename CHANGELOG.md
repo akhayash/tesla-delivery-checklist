@@ -4,6 +4,23 @@
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従い、
 CHANGELOG は [release-please](https://github.com/googleapis/release-please) により自動生成されます。
 
+## [1.1.0](https://github.com/akhayash/tesla-delivery-checklist/compare/v1.0.0...v1.1.0) (2026-05-16)
+
+
+### Features
+
+* **data:** add charge port cable-button auto-open check ([ab81e71](https://github.com/akhayash/tesla-delivery-checklist/commit/ab81e719e163969ff031a009e6054bc180507273))
+* **ui+data:** sticky filter chips, drop 未チェック toggle, ▸ paths, fact-checked items, wheel cover check ([6f963fb](https://github.com/akhayash/tesla-delivery-checklist/commit/6f963fbf15804c0020b05f5b084e3b4f485bebb5))
+* v1.1 チェックリスト整理・重複削除・severity 再校正・7 項目追加・メディア漏れ修正 ([#15](https://github.com/akhayash/tesla-delivery-checklist/issues/15)) ([60b8778](https://github.com/akhayash/tesla-delivery-checklist/commit/60b87783962a4fda4f01ff5538a65e77d229aa9c))
+
+
+### Bug Fixes
+
+* **data:** clarify 車検証/行驶证 must be physically in the vehicle ([c141048](https://github.com/akhayash/tesla-delivery-checklist/commit/c1410485437b378424b64affc8ecec2989aeb910))
+* **data:** mobile connector is optional, no 3rd-row floor mat ([499f7fe](https://github.com/akhayash/tesla-delivery-checklist/commit/499f7fe0bfae93d486962feba77c346fa0340cdc))
+* **pwa:** force immediate service worker activation to avoid stale UI ([2498f4f](https://github.com/akhayash/tesla-delivery-checklist/commit/2498f4f876e5f60b063872beee190af8b69561ef))
+* **pwa:** force-activate waiting SW on page load to unstick cached users ([5a4c755](https://github.com/akhayash/tesla-delivery-checklist/commit/5a4c755a46a9fe1e93259cfbc3082e3561cffbf5))
+
 ## 1.0.0 (2026-05-16)
 
 
