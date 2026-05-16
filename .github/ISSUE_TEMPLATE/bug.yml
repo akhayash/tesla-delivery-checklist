@@ -1,0 +1,34 @@
+name: バグ報告
+description: 動作不具合の報告
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: アプリのバージョン
+      description: Settings 画面フッターに表示されている vX.Y.Z
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: 端末・ブラウザ
+      options:
+        - iOS Safari
+        - iOS Chrome
+        - Android Chrome
+        - Android Edge
+        - Desktop Chrome
+        - Desktop Safari
+        - Desktop Edge
+        - その他
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 発生した事象
+      description: 何が起きたか / 期待した動作 / 再現手順
+    validations:
+      required: true
