@@ -561,6 +561,13 @@ export const modelYLTemplate: ChecklistTemplate = {
             '充電開始、最大電流、充電カーブ、車載画面の表示確認。',
           severity: 'major',
         },
+        {
+          id: 'fn.charge-port-cable-button',
+          title: '充電ポート蓋：充電ケーブル先端のボタンで自動オープン',
+          description:
+            'Supercharger ケーブルを車両に近づけ、コネクタ先端のボタンを押すと充電ポートの蓋が自動で開くか確認。蓋が開かないと現場で手動操作が必要になる。アプリ・タッチスクリーン・蓋タップなど別経路でも開閉できるか合わせて確認。',
+          severity: 'major',
+        },
       ],
     },
     {
