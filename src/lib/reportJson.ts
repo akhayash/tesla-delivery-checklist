@@ -62,23 +62,24 @@ export async function importJson(json: JsonExport): Promise<ChecklistSnapshot> {
     throw new Error('対応していないファイル形式です');
   }
   if (json.media?.length) {
-    // Recreate blobs in IDB and remap ids (keep original ids so snapshot links match).
+    // Save each blob and build a Map of old id → new id before mutating the snapshot.
+    const idMap = new Map<string, string>();
     await Promise.all(
       json.media.map(async (m) => {
-        await saveMedia({
+        const saved = await saveMedia({
           itemId: m.itemId,
           kind: m.kind,
           mimeType: m.mimeType,
           size: m.size,
           blob: dataUrlToBlob(m.dataUrl),
-        }).then(async (saved) => {
-          // Replace media id in the snapshot references with the new id
-          for (const state of Object.values(json.snapshot.states)) {
-            state.mediaIds = state.mediaIds.map((id) => (id === m.id ? saved.id : id));
-          }
         });
+        idMap.set(m.id, saved.id);
       })
     );
+    // Remap all media ids in the snapshot in a single pass (no concurrent mutation).
+    for (const state of Object.values(json.snapshot.states)) {
+      state.mediaIds = state.mediaIds.map((id) => idMap.get(id) ?? id);
+    }
   }
   return json.snapshot;
 }

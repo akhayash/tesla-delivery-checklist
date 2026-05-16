@@ -8,8 +8,9 @@ import type {
   UserItemState,
 } from '@/data/schema';
 import { defaultModelId, getTemplate } from '@/data/templates';
+import { deleteMany } from '@/store/media';
 
-const CURRENT_TEMPLATE_VERSION = '0.3.0';
+const CURRENT_TEMPLATE_VERSION = '0.4.0';
 
 interface ProgressState {
   snapshot: ChecklistSnapshot;
@@ -158,18 +159,27 @@ export const useProgress = create<ProgressState>()(
         set((s) => ({ snapshot: upsertItems(s.snapshot, itemIds, { status }) })),
       bulkClearStatus: (itemIds) =>
         set((s) => ({ snapshot: upsertItems(s.snapshot, itemIds, { status: 'unchecked' }) })),
-      switchModel: (modelId) =>
-        set({
-          snapshot: initialSnapshot(modelId),
-          migrationWarning: null,
-          lastCheckedItemId: null,
-        }),
+      switchModel: (modelId) => {
+        set((s) => {
+          const allMediaIds = Object.values(s.snapshot.states).flatMap((st) => st.mediaIds);
+          void deleteMany(allMediaIds);
+          return {
+            snapshot: initialSnapshot(modelId),
+            migrationWarning: null,
+            lastCheckedItemId: null,
+          };
+        });
+      },
       reset: () =>
-        set((s) => ({
-          snapshot: initialSnapshot(s.snapshot.meta.modelId),
-          migrationWarning: null,
-          lastCheckedItemId: null,
-        })),
+        set((s) => {
+          const allMediaIds = Object.values(s.snapshot.states).flatMap((st) => st.mediaIds);
+          void deleteMany(allMediaIds);
+          return {
+            snapshot: initialSnapshot(s.snapshot.meta.modelId),
+            migrationWarning: null,
+            lastCheckedItemId: null,
+          };
+        }),
       importSnapshot: (snap) => {
         const normalized = normalizeSnapshot(snap);
         set({

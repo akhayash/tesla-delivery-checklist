@@ -5,13 +5,13 @@ test.describe('一括ショートカット', () => {
     await page.getByRole('link', { name: /チェックを開始/ }).click();
     await page.getByTestId('checklist-filter-critical').click();
 
-    await expect(page.getByTestId('bulk-preview')).toContainText('現在未チェックの 10 件');
+    await expect(page.getByTestId('bulk-preview')).toContainText('現在未チェックの 13 件');
 
     await page.getByTestId('bulk-ok').click();
 
     await expect(page.getByTestId('item-doc.vin-match')).toHaveAttribute('data-status', 'ok');
     await expect(page.getByTestId('item-int.pedals')).toHaveAttribute('data-status', 'ok');
-    await expect(page.getByText('表示中の未チェック 10 件を OK にしました')).toBeVisible();
+    await expect(page.getByText('表示中の未チェック 13 件を OK にしました')).toBeVisible();
 
     await page.getByRole('button', { name: 'Undo' }).click();
 
