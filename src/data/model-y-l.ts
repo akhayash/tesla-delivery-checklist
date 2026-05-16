@@ -69,8 +69,8 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'doc.floormats',
-          title: 'フロアマット (3 列分)',
-          description: 'Model Y L は 3 列シートのため、前列・2 列目・3 列目それぞれのマットがそろっているか確認。',
+          title: '同梱フロアマット',
+          description: '注文書・パッケージリストに記載された枚数のフロアマットがそろっているか確認 (グレード・地域・オプションにより対象列が異なります)。',
           severity: 'minor',
         },
         {
