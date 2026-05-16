@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { InstallGuide } from '@/components/InstallGuide';
 import { useProgress } from '@/store/progress';
 import { exportJson, importJson, type JsonExport } from '@/lib/reportJson';
 import { downloadBlob } from '@/lib/shareApi';
@@ -72,6 +73,20 @@ export default function SettingsPage() {
           バックアップ・データ削除・容量を管理します。
         </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">スマホで使う (PWA インストール)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            ホーム画面に追加すると、ブラウザのアドレスバーが消えて全画面で起動し、
+            電波が届かない屋内駐車場でもオフラインで動作します。
+            写真・データはこの端末にのみ保存されます。
+          </p>
+          <InstallGuide variant="default" />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
