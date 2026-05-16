@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { AlertTriangle, CheckCircle2, MinusCircle } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { AlertTriangle, CheckCircle2, Clock, Info, MinusCircle } from 'lucide-react';
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -9,12 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { ChecklistItem, ItemStatus, Severity } from '@/data/schema';
 import { useProgress } from '@/store/progress';
+import { itemMinutes } from '@/lib/checklistScope';
 import { MediaCapture } from './MediaCapture';
 
 const severityBadge: Record<Severity, { label: string; variant: 'destructive' | 'warning' | 'muted' }> = {
-  critical: { label: '重大', variant: 'destructive' },
-  major: { label: '要対応', variant: 'warning' },
-  minor: { label: '軽微', variant: 'muted' },
+  critical: { label: '必須', variant: 'destructive' },
+  major: { label: '標準', variant: 'warning' },
+  minor: { label: '任意', variant: 'muted' },
 };
 
 export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
@@ -26,6 +27,7 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
   const note = state?.note ?? '';
   const mediaIds = state?.mediaIds ?? [];
   const sev = item.severity ?? 'minor';
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
 
   const containerCls = useMemo(
     () =>
@@ -45,8 +47,38 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={severityBadge[sev].variant}>{severityBadge[sev].label}</Badge>
-            <h4 className="text-sm font-medium leading-snug text-foreground">{item.title}</h4>
+            <h4 className="flex-1 text-sm font-medium leading-snug text-foreground">
+              {item.title}
+              {item.glossary && (
+                <button
+                  type="button"
+                  onClick={() => setGlossaryOpen((v) => !v)}
+                  aria-expanded={glossaryOpen}
+                  aria-label="用語の説明を見る"
+                  className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  data-testid={`glossary-trigger-${item.id}`}
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </h4>
+            <span
+              className="inline-flex items-center gap-1 text-[10px] text-muted-foreground"
+              aria-label={`所要時間 約 ${itemMinutes(item)} 分`}
+            >
+              <Clock className="h-3 w-3" />
+              {itemMinutes(item)} 分
+            </span>
           </div>
+          {item.glossary && glossaryOpen && (
+            <p
+              className="mt-1.5 rounded-md border border-border/60 bg-secondary/30 px-2.5 py-1.5 text-[11px] leading-relaxed text-muted-foreground"
+              data-testid={`glossary-${item.id}`}
+            >
+              <span className="font-medium text-foreground">用語: </span>
+              {item.glossary}
+            </p>
+          )}
           {item.description && (
             <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
               {item.description}

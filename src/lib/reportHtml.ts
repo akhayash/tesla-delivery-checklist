@@ -12,9 +12,9 @@ const statusLabel: Record<ItemStatus, string> = {
 };
 
 const severityLabel: Record<Severity, string> = {
-  critical: '重大',
-  major: '要対応',
-  minor: '軽微',
+  critical: '必須',
+  major: '標準',
+  minor: '任意',
 };
 
 function escape(s: string): string {
@@ -165,8 +165,7 @@ table.all th { color: var(--muted); font-weight: 500; font-size: 12px; text-tran
 .qr-title { margin: 0; font-size: 13px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 .qr-desc { margin: 6px 0 8px; font-size: 12px; line-height: 1.5; color: #DDD; }
 .qr-url { margin: 0; font-size: 11px; word-break: break-all; color: var(--muted); font-family: ui-monospace, SFMono-Regular, monospace; }
-.sign-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
-.sign-row .box { border-bottom: 1px solid var(--muted); padding-bottom: 28px; color: var(--muted); font-size: 12px; }
+.sign-row { display: none; }
 details summary { cursor: pointer; color: var(--muted); margin: 16px 0 8px; }
 @media print {
   html, body { background: #fff !important; color: #0B0D0F !important; }
@@ -206,20 +205,15 @@ details summary { cursor: pointer; color: var(--muted); margin: 16px 0 8px; }
     ${sortedIssues.length === 0 ? '<p style="color:var(--muted)">問題として記録された項目はありません。</p>' : issuesHtml}
   </section>
 
-  <details>
-    <summary>全項目の結果を表示する</summary>
+  <section>
+    <h2>全項目の確認結果</h2>
     <table class="all">
       <thead>
         <tr><th>カテゴリ</th><th>項目</th><th>重要度</th><th>結果</th><th>メモ</th></tr>
       </thead>
       <tbody>${allRows}</tbody>
     </table>
-  </details>
-
-  <div class="sign-row">
-    <div class="box">オーナー署名 / 日付</div>
-    <div class="box">Tesla アドバイザー署名 / 日付</div>
-  </div>
+  </section>
 
   <p class="foot">
     本レポートは <code>tesla-delivery-checklist</code> によって生成されました。<br/>

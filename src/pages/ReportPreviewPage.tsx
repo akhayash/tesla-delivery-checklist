@@ -9,6 +9,7 @@ import { generateHtmlReport } from '@/lib/reportHtml';
 import { buildMailto } from '@/lib/reportMailto';
 import { downloadBlob } from '@/lib/shareApi';
 import { getAppUrl } from '@/lib/appUrl';
+import { NativeReportPreview } from '@/components/NativeReportPreview';
 import { toast } from 'sonner';
 
 function ts() {
@@ -20,24 +21,19 @@ function ts() {
 export default function ReportPreviewPage() {
   const snapshot = useProgress((s) => s.snapshot);
   const template = getTemplate(snapshot.meta.modelId);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const [report, setReport] = useState<BuiltReport | null>(null);
-  const [html, setHtml] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
 
   useEffect(() => {
     let active = true;
     setBusy(true);
     buildReport(template, snapshot, { includeMedia: true })
-      .then(async (r) => {
+      .then((r) => {
         if (!active) return;
         setReport(r);
-        const h = await generateHtmlReport(r, { appUrl: getAppUrl() });
-        if (active) {
-          setHtml(h);
-          setBusy(false);
-        }
+        setBusy(false);
       })
       .catch(() => {
         if (active) setBusy(false);
@@ -47,19 +43,35 @@ export default function ReportPreviewPage() {
     };
   }, [template, snapshot]);
 
-  function handleDownload() {
-    if (!html) return;
+  async function handleDownload() {
+    if (!report) return;
+    const html = await generateHtmlReport(report, { appUrl: getAppUrl() });
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     downloadBlob(blob, `tesla-delivery-report-${ts()}.html`);
     toast.success('HTML レポートをダウンロードしました');
   }
 
-  function handlePrint() {
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.print();
-    } else {
-      toast.error('プレビューの読み込みが完了していません。');
+  async function handlePrint() {
+    if (!report) {
+      toast.error('レポートを生成中です。少し待ってからお試しください。');
+      return;
     }
+    // For PDF download we open the self-contained HTML report in a new tab
+    // and trigger print. Browser's "Save as PDF" gives a high-fidelity output
+    // with the full layout (including QR + media).
+    const html = await generateHtmlReport(report, { appUrl: getAppUrl() });
+    const w = window.open('', '_blank');
+    if (!w) {
+      toast.error('ポップアップがブロックされました。設定で許可してください。');
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 500);
   }
 
   function handleMailto() {
@@ -69,12 +81,16 @@ export default function ReportPreviewPage() {
   }
 
   return (
-    <div className="-mx-4 -my-5 flex flex-col" style={{ height: 'calc(100vh - 57px)' }}>
+    <div
+      className="-mx-4 -my-5 flex flex-col"
+      style={{ minHeight: 'calc(100vh - 57px)' }}
+      data-testid="preview-root"
+    >
       {/* Sticky action bar */}
-      <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-border bg-background px-4 py-2">
+      <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-border bg-background/90 px-4 py-2 backdrop-blur">
         <Button asChild variant="ghost" size="sm">
           <Link to="/summary">
-            <ArrowLeft className="h-4 w-4" /> レポートに戻る
+            <ArrowLeft className="h-4 w-4" /> 戻る
           </Link>
         </Button>
         <div className="ml-auto flex flex-wrap gap-2">
@@ -85,7 +101,7 @@ export default function ReportPreviewPage() {
             size="sm"
             data-testid="preview-download-html"
           >
-            <Download className="h-4 w-4" /> HTML としてダウンロード
+            <Download className="h-4 w-4" /> HTML
           </Button>
           <Button
             onClick={handlePrint}
@@ -94,7 +110,7 @@ export default function ReportPreviewPage() {
             size="sm"
             data-testid="preview-print"
           >
-            <Printer className="h-4 w-4" /> PDF としてダウンロード
+            <Printer className="h-4 w-4" /> PDF
           </Button>
           <Button
             onClick={handleMailto}
@@ -103,26 +119,17 @@ export default function ReportPreviewPage() {
             size="sm"
             data-testid="preview-mail"
           >
-            <Mail className="h-4 w-4" /> メールで送信
+            <Mail className="h-4 w-4" /> メール
           </Button>
         </div>
       </div>
 
-      {/* Preview area */}
-      <div className="flex-1 overflow-hidden">
+      {/* Native React preview */}
+      <div ref={previewRef} className="flex-1" data-testid="preview-iframe">
         {busy && (
           <p className="p-4 text-sm text-muted-foreground">レポートを生成中...</p>
         )}
-        {html && (
-          <iframe
-            ref={iframeRef}
-            srcDoc={html}
-            sandbox="allow-same-origin"
-            className="h-full w-full border-0"
-            title="HTML レポートプレビュー"
-            data-testid="preview-iframe"
-          />
-        )}
+        {report && <NativeReportPreview report={report} />}
       </div>
     </div>
   );
