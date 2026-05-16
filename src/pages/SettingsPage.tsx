@@ -152,6 +152,10 @@ export default function SettingsPage() {
         外部サーバーへの送信はありません。
       </p>
 
+      <p className="text-center text-[10px] text-muted-foreground/70 tabular">
+        tesla-delivery-checklist v{__APP_VERSION__}
+      </p>
+
       <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
         <DialogContent>
           <DialogHeader>

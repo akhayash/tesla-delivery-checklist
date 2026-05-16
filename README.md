@@ -149,3 +149,7 @@ Vite · React 18 · TypeScript · Tailwind CSS · shadcn/ui (Radix UI) · lucide
 [MIT](./LICENSE) © akhayash
 
 このアプリは Tesla, Inc. とは無関係の個人プロジェクトです。Tesla、Model Y、Model Y L は Tesla, Inc. の商標です。
+
+## バージョン管理
+
+[CONTRIBUTING.md](./CONTRIBUTING.md) を参照。Semantic Versioning + Conventional Commits + release-please で自動化しています。リリース履歴は [CHANGELOG.md](./CHANGELOG.md) と [GitHub Releases](https://github.com/akhayash/tesla-delivery-checklist/releases) を参照。
