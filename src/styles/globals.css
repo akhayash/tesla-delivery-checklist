@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Tesla-inspired dark-first theme (default) */
+    --background: 220 8% 5%;          /* #0B0D0F */
+    --foreground: 0 0% 96%;           /* #F5F5F7 */
+
+    --card: 220 7% 9%;                /* ~#171A20 */
+    --card-foreground: 0 0% 96%;
+
+    --popover: 220 7% 9%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 0 0% 96%;
+    --primary-foreground: 220 8% 5%;
+
+    --secondary: 220 5% 16%;          /* ~#27292D */
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 220 5% 16%;
+    --muted-foreground: 220 3% 63%;   /* ~#9CA0A6 */
+
+    --accent: 351 79% 49%;            /* #E31937 Tesla Red */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 351 79% 49%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 158 82% 39%;           /* ~#12B981 */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;            /* ~#F59E0B */
+    --warning-foreground: 220 7% 9%;
+
+    --border: 220 5% 16%;
+    --input: 220 5% 16%;
+    --ring: 351 79% 49%;
+
+    --radius: 0.875rem;
+  }
+
+  /* Optional light theme (Tesla Snow) — kept for printing legibility. */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 220 7% 11%;
+
+    --card: 0 0% 96%;
+    --card-foreground: 220 7% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 7% 11%;
+
+    --primary: 220 7% 11%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 7% 11%;
+
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 5% 38%;
+
+    --accent: 351 79% 49%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 351 79% 49%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 158 82% 39%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 7% 9%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 351 79% 49%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* iOS safe area helpers */
+  .safe-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Display headings: Tesla-style narrow tracking */
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+
+  button,
+  [role='button'],
+  a {
+    @apply select-none;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--secondary));
+    border-radius: 999px;
+  }
+}
+
+@layer utilities {
+  .tesla-accent-line {
+    background: linear-gradient(90deg, transparent, hsl(var(--accent)), transparent);
+  }
+}
