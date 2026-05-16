@@ -29,6 +29,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { QrCode } from '@/components/QrCode';
+import { InstallGuide } from '@/components/InstallGuide';
 import { getAppUrl } from '@/lib/appUrl';
 import { getTemplate, listTemplates } from '@/data/templates';
 import { useProgress } from '@/store/progress';
@@ -181,7 +182,7 @@ export default function HomePage() {
             </Link>
           </Button>
         )}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Button asChild variant="outline">
             <Link to="/report/preview">
               <FileBarChart2 className="h-4 w-4" /> レポート
@@ -190,6 +191,7 @@ export default function HomePage() {
           <Button asChild variant="outline">
             <Link to="/settings">設定 / データ</Link>
           </Button>
+          <InstallGuide variant="compact" />
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" data-testid="qr-open">
