@@ -9,8 +9,8 @@ test('HomePage: アコーディオンを開くと車両情報が表示される'
   const trigger = page.getByRole('button', { name: /車両情報/ });
   await trigger.click();
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-  // Vehicle spec content should be visible
-  await expect(page.getByText(/Model Y/)).toBeVisible();
+  // Spec content rendered inside the accordion (uniquely matches this section).
+  await expect(page.getByText(/ロングホイールベース/)).toBeVisible();
 });
 
 test('SummaryPage: Markdown / JSON ボタンが存在しない', async ({ freshPage: page }) => {
