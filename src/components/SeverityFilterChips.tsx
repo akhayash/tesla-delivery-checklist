@@ -32,7 +32,7 @@ export function SeverityFilterChips() {
             role="radio"
             aria-checked={active}
             onClick={() => setSeverityFilter(mode)}
-            data-testid={`filter-chip-${mode}`}
+            data-testid={`checklist-filter-${mode}`}
             data-active={active}
           >
             {severityFilterMeta[mode].label}
