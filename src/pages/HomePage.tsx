@@ -83,7 +83,7 @@ export default function HomePage() {
         </h1>
         <div className="mt-3 h-[3px] w-14 bg-accent" />
         <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-          車種ごとのチェックリストに沿って、外装・内装・機能・書類を 1 つずつ確認。
+          車種ごとのチェックリストに沿って、外装・内装・機能・書類を 1 つずつ確認します。
           問題があった項目は写真・動画・メモを添付し、その場で共有用のレポートを生成します。
         </p>
       </section>
@@ -221,9 +221,9 @@ export default function HomePage() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Tip icon={Camera} title="撮影は片手で" body="OS 純正カメラを起動。フラッシュ・Night Mode も普段通り。" />
-        <Tip icon={ShieldCheck} title="完全ローカル保存" body="写真・動画・メモは端末にのみ。リポジトリへは送信しません。" />
-        <Tip icon={FileBarChart2} title="共有しやすく" body="自己完結 HTML / PDF / メールでレポート化。" />
+        <Tip icon={Camera} title="撮影は片手で" body="OS 純正カメラを起動して、フラッシュ・Night Mode も普段どおり使えます。" />
+        <Tip icon={ShieldCheck} title="完全ローカル保存" body="写真・動画・メモは端末にのみ保存します。リポジトリへは送信しません。" />
+        <Tip icon={FileBarChart2} title="共有しやすく" body="自己完結 HTML / PDF / メールでレポート化できます。" />
       </div>
 
       <p className="text-[11px] text-muted-foreground">

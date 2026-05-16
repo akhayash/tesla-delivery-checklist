@@ -71,7 +71,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.registration',
           title: '車検証 / 自賠責証明書がグローブボックスに常備されている',
           description:
-            '車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書が車内 (グローブボックス) に常備されているか確認。道路運送車両法第 66 条で常時携帯が義務付けられており、デジタル管理のみは不可。電子車検証は IC カードのみだと現場では内容を確認できないため、納車担当に専用リーダーまたは「車検証閲覧アプリ」での読み取りを依頼し、VIN・所有者氏名・住所が注文書と一致するかその場で確認すること。',
+            '車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書が車内 (グローブボックス) に常備されているか確認します。道路運送車両法第 66 条で常時携帯が義務付けられており、デジタル管理のみでは対応できません。電子車検証は IC カードのみだと現場で内容を確認しにくいため、納車担当に専用リーダーまたは「車検証閲覧アプリ」での読み取りを依頼し、VIN・所有者氏名・住所が注文書と一致するかその場で確認します。',
           severity: 'critical',
         },
         {
@@ -99,7 +99,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.floormats',
           title: 'フロアマット (1・2 列目のみ、3 列目はない)',
           description:
-            '前列・2 列目用マットの有無を確認。3 列目用マットは付属しない仕様。マット類は別売アクセサリー扱いの場合があるため、注文書記載の枚数と実物を必ず照合する。',
+            '前列・2 列目用マットの有無を確認します。3 列目用マットは付属しない仕様です。マット類は別売アクセサリー扱いの場合があるため、注文書記載の枚数と実物を照合します。',
           severity: 'minor',
         },
         {
@@ -122,7 +122,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.lights',
           title: 'ライト類：ヘッドライト / テールライトの点灯・結露',
           description:
-            'ロー・ハイ・デイライト・ターン・ブレーキ・リバース・リアフォグまでひと通り点灯確認。さらにヘッドライト・テールライト内部の結露・曇り (condensation) の有無を念入りに確認すること。Tesla Motors Club と Reddit r/TeslaModelY で頻出する既知不具合で、納車後に発見すると「使用環境による」と判断されて保証対応が長引きがち。少しでも曇りがあればその場で写真・動画を撮影し Due Bill に記載してもらう。',
+            'ロー・ハイ・デイライト・ターン・ブレーキ・リバース・リアフォグまでひと通り点灯を確認します。さらにヘッドライト・テールライト内部の結露・曇り (condensation) の有無も念入りに確認します。Tesla Motors Club と Reddit r/TeslaModelY で頻出する既知不具合で、納車後に発見すると「使用環境による」と判断されて保証対応が長引きがちです。少しでも曇りがあればその場で写真・動画を撮影し、Due Bill への記載を依頼します。',
           severity: 'major',
         },
         {
@@ -220,7 +220,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.frame-alignment',
           title: 'フレーム・ピラー整合 (対角線チェック・オーナー実施)',
           description:
-            '4 枚のドア開口部それぞれで、対角線 (左上⇄右下、右上⇄左下) を金属メジャーで計測し、左右の差が 5 mm 以内か確認。計測点はドア開口部の角 (ウェザーストリップの内側、ピラーとシルが交わるコーナー部) を左右同じ位置に揃えるのがコツ。Tesla の納車プロセスにはこの計測は含まれないため、オーナー自身または第三者の納車検査サービスが実施する。差が 5 mm を超える場合はフレーム歪みの可能性があり、最重要欠陥として写真記録した上で受領前に必ず指摘すること。',
+            '4 枚のドア開口部それぞれで、対角線 (左上⇄右下、右上⇄左下) を金属メジャーで計測し、左右の差が 5 mm 以内か確認します。計測点はドア開口部の角 (ウェザーストリップの内側、ピラーとシルが交わるコーナー部) を左右同じ位置に揃えると測りやすくなります。Tesla の納車プロセスにはこの計測は含まれないため、オーナー自身または第三者の納車検査サービスで実施します。差が 5 mm を超える場合はフレーム歪みの可能性があるため、最重要欠陥として写真記録したうえで受領前に指摘します。',
           severity: 'critical',
         },
         {
@@ -392,7 +392,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'yl.cargo-with-3rd',
-          title: '3 列目使用時のラゲッジ容量・床段差',
+          title: '3 列目使用時のトランク容量・床段差',
           description:
             '3 列目を立てた状態で標準カーゴ容量があるか、フックやネットの位置。',
           severity: 'minor',
@@ -450,7 +450,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'int.trunk',
-          title: 'ラゲッジ：トノカバー・12V/USB-C・サブトランク',
+          title: 'トランク：トノカバー・12 V/USB-C・サブトランク',
           description:
             '3 列目を畳んだ後の床の段差、サブトランクのカーペット固定。',
           severity: 'major',
@@ -466,16 +466,16 @@ export const modelYLTemplate: ChecklistTemplate = {
       items: [
         {
           id: 'fn.no-warning',
-          title: '12V / 補機バッテリーやシステム警告が残っていない',
+          title: '12 V / 補機バッテリーやシステム警告が残っていない',
           description:
             'メッセージ一覧や通知バナーに異常表示が残っていないか。',
           severity: 'critical',
         },
         {
           id: 'fn.12v-battery-health',
-          title: '12V (補機) バッテリーの警告灯・電圧確認',
+          title: '12 V (補機) バッテリーの警告灯・電圧確認',
           description:
-            'Controls ▸ Service ▸ Electrical を開き、12V (補機) バッテリー電圧が 12.6 V 以上あるか、オレンジ色の警告アイコンが点灯していないかを確認。12.3 V を下回る場合は要交換レベル。TMC では「納車直後にドアが内側から開かない」「タッチスクリーンが起動しない」「Sentry Mode で残量が急減」など 12V 由来のトラブルが報告されており、初期不良の温床として要注意。所要 1 分。',
+            'Controls ▸ Service ▸ Electrical を開き、12 V (補機) バッテリー電圧が 12.6 V 以上あるか、オレンジ色の警告アイコンが点灯していないかを確認します。12.3 V を下回る場合は要交換レベルです。TMC では「納車直後にドアが内側から開かない」「タッチスクリーンが起動しない」「Sentry Mode で残量が急減」など 12 V 由来のトラブルが報告されており、初期不良の温床として注意が必要です。所要 1 分です。',
           severity: 'critical',
         },
         {
@@ -538,7 +538,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.cameras',
           title: 'カメラ：全方位映像の歪み / 汚れ (HW4 / 9 カメラ)',
           description:
-            'Model Y L は Hardware 4 (AI4) を搭載し、物理カメラは 9 個 (スクリーン上は 8 方位表示)。Controls ▸ Service ▸ Camera で全角度の映像を表示させ、ぼやけ・歪み・汚れがないかを確認。特に左右 B ピラーのリピーターカメラは内部結露 (condensation) が既知の欠陥で TMC / Reddit に多数報告あり。映像が曇って見える、または外からレンズを覗いて内部に水滴・霧が見える場合は保証修理対象なのでその場で指摘し、写真を Due Bill に添付すること。所要 3 分。',
+            'Model Y L は Hardware 4 (AI4) を搭載し、物理カメラは 9 個 (スクリーン上は 8 方位表示) です。Controls ▸ Service ▸ Camera で全角度の映像を表示させ、ぼやけ・歪み・汚れがないかを確認します。特に左右 B ピラーのリピーターカメラは内部結露 (condensation) が既知の欠陥で、TMC / Reddit に多数報告があります。映像が曇って見える、または外からレンズを覗いて内部に水滴・霧が見える場合は保証修理対象のため、その場で指摘して写真を Due Bill に添付します。所要 3 分です。',
           severity: 'major',
         },
         {
@@ -601,7 +601,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'fn.supercharger',
-          title: 'スーパーチャージャー試し充電 (最大 250 kW)',
+          title: 'スーパーチャージャーで試し充電 (最大 250 kW)',
           description:
             'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。V4 (500 kW キャビネット) は 2025 年から段階展開中。コネクタを接続してから 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
           severity: 'major',
@@ -671,7 +671,7 @@ export const modelYLTemplate: ChecklistTemplate = {
       title: '10. 引き渡し後対応',
       icon: 'BadgeCheck',
       locationHint:
-        '気になる点はその場で書面化し、帰宅後に慌てないようサポート窓口と次の動きを確認。',
+        '気になる点はその場で書面化し、帰宅後に慌てないようサポート窓口と今後の動きを確認。',
       items: [
         {
           id: 'af.due-bill',
