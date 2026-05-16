@@ -6,7 +6,7 @@ const statusLabel: Record<ItemStatus, string> = {
   ok: '✅ OK',
   issue: '⚠️ 問題あり',
   na: '— 対象外',
-  unchecked: '◻ 未確認',
+  unchecked: '◻ 未チェック',
 };
 const severityLabel: Record<Severity, string> = {
   critical: '🔴 重大',
@@ -30,7 +30,7 @@ export function generateMarkdownReport(report: BuiltReport): string {
   lines.push(`- テンプレート: ${template.modelId}@${template.version}`);
   lines.push('');
   lines.push(
-    `**集計**: OK ${totals.ok} / 問題 ${totals.issue} / 対象外 ${totals.na} / 未確認 ${totals.unchecked} (合計 ${totals.total})`
+    `**集計**: OK ${totals.ok} / 問題 ${totals.issue} / 対象外 ${totals.na} / 未チェック ${totals.unchecked} (合計 ${totals.total})`
   );
   lines.push('');
 

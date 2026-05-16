@@ -13,7 +13,7 @@ export function buildMailto(report: BuiltReport, options: { to?: string } = {}):
   if (meta.deliveryLocation) lines.push(`■ 納車場所: ${meta.deliveryLocation}`);
   if (meta.ownerName) lines.push(`■ オーナー: ${meta.ownerName}`);
   lines.push('');
-  lines.push(`■ 集計: OK ${totals.ok} / 問題 ${totals.issue} / 対象外 ${totals.na} / 未確認 ${totals.unchecked} (合計 ${totals.total})`);
+  lines.push(`■ 集計: OK ${totals.ok} / 問題 ${totals.issue} / 対象外 ${totals.na} / 未チェック ${totals.unchecked} (合計 ${totals.total})`);
   lines.push('');
   lines.push(`■ 問題があった項目 (${issueEntries.length} 件):`);
   if (issueEntries.length === 0) {

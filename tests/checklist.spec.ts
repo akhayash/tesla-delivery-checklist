@@ -11,6 +11,8 @@ test.describe('チェックリスト基本操作', () => {
     // Navigate to checklist
     await page.getByRole('link', { name: /チェックを開始/ }).click();
     await expect(page).toHaveURL(/#\/checklist/);
+    await expect(page.getByTestId('cat-step-1-handoff')).toBeVisible();
+    await expect(page.getByTestId('cat-step-10-aftercare')).toBeVisible();
 
     // The first item (VIN match) is critical
     const firstItem = page.getByTestId('item-doc.vin-match');
@@ -46,6 +48,6 @@ test.describe('チェックリスト基本操作', () => {
     await page.getByRole('link', { name: /チェックを開始/ }).click();
     const item = page.getByTestId('item-doc.vin-match');
     await item.getByRole('radio', { name: '問題あり' }).click();
-    await expect(page.getByTestId('cat-documents')).toContainText('問題 1');
+    await expect(page.getByTestId('cat-step-1-handoff')).toContainText('問題 1');
   });
 });

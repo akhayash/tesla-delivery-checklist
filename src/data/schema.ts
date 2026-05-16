@@ -2,6 +2,8 @@ export type ItemStatus = 'unchecked' | 'ok' | 'issue' | 'na';
 
 export type Severity = 'critical' | 'major' | 'minor';
 
+export type SeverityFilter = 'critical' | 'standard' | 'all';
+
 export interface ChecklistItem {
   id: string;
   title: string;
@@ -16,6 +18,7 @@ export interface ChecklistCategory {
   id: string;
   title: string;
   icon?: string;
+  locationHint?: string;
   items: ChecklistItem[];
 }
 

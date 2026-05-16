@@ -8,7 +8,7 @@ const statusLabel: Record<ItemStatus, string> = {
   ok: 'OK',
   issue: '問題あり',
   na: '対象外',
-  unchecked: '未確認',
+  unchecked: '未チェック',
 };
 
 const severityLabel: Record<Severity, string> = {
@@ -99,7 +99,7 @@ export async function generateHtmlReport(report: BuiltReport, options: { appUrl?
       <span class="t-pill t-ok">OK <b>${totals.ok}</b></span>
       <span class="t-pill t-issue">問題 <b>${totals.issue}</b></span>
       <span class="t-pill t-na">対象外 <b>${totals.na}</b></span>
-      <span class="t-pill t-un">未確認 <b>${totals.unchecked}</b></span>
+      <span class="t-pill t-un">未チェック <b>${totals.unchecked}</b></span>
       <span class="t-pill t-all">合計 <b>${totals.total}</b></span>
     </div>`;
 
