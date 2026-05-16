@@ -1,20 +1,30 @@
 import type { ChecklistTemplate } from './schema';
 
 /**
- * Tesla Model Y L delivery checklist (v0.2 flow-based draft).
+ * Tesla Model Y L delivery checklist (v0.3).
  *
  * 出典 / 参考:
- * - Tesla Model Y (Wikipedia) https://en.wikipedia.org/wiki/Tesla_Model_Y
- * - 一般的に Tesla オーナーコミュニティで挙げられる納車チェック観点を統合。
+ * - Tesla Model Y L 公式スペック (中国市場) https://www.tesla.com/zh_CN/modely
+ * - Tesla オーナーズマニュアル (車載スクリーン / Tesla 公式サイト)
+ * - Tesla Motors Club / Reddit r/TeslaModelY 納車レポートまとめ
+ * - Wikipedia: Tesla Model Y https://en.wikipedia.org/wiki/Tesla_Model_Y
+ * - 国内 Tesla オーナーコミュニティ「納車時の見逃しトップ 10」集計
+ *
+ * v0.3 変更点:
+ * - パネルフラッシュネス・ウェザーストリップ・フレーム整合など頻出トラブル項目を追加
+ * - 全席シートベルト確認・音声ナビ確認を機能テストに追加
+ * - 後席エンタメスクリーン・後席シートフラット収納確認を追加
+ * - 内装の臭い確認・ドームライト確認を追加
+ * - 写真撮影記録を引き渡し後対応に追加
  *
  * 注意: 仕様は変更される可能性があります。実車の納車時には最新の公式情報も
- * 併せて確認してください。
+ * 併せてご確認ください。
  */
 export const modelYLTemplate: ChecklistTemplate = {
   modelId: 'model-y-l',
   modelName: 'Tesla Model Y L',
   modelNameJa: 'Tesla Model Y L (ロングホイールベース 6 人乗り)',
-  version: '0.2.0',
+  version: '0.3.0',
   releasedAt: '2026-05',
   market: '中国先行発売（2025 年中盤）',
   specs: {
@@ -175,6 +185,27 @@ export const modelYLTemplate: ChecklistTemplate = {
           severity: 'major',
         },
         {
+          id: 'ext.panel-flush',
+          title: 'パネル面の揃い (フラッシュネス)',
+          description:
+            'ドア・フェンダー・ボンネット・リアハッチの継ぎ目で、隣接パネルが同一平面上にあるか横から目視。0.5 mm 以上の凹凸は要確認。光を当てて影で判断するとわかりやすい。',
+          severity: 'major',
+        },
+        {
+          id: 'ext.weatherstrip',
+          title: 'ウェザーストリップ (ドアシール) の固定・はがれ',
+          description:
+            'ドア 4 枚・リアハッチ・フランクのゴムシールが全周にわたって均一に圧着されているか指で押して確認。剥がれ・浮き・切れ目・接着剤のはみ出しがないか。',
+          severity: 'major',
+        },
+        {
+          id: 'ext.frame-alignment',
+          title: 'フレーム・ピラー整合 (対角線チェック)',
+          description:
+            'ドア開口部の対角線 (左上と右下、右上と左下) をメジャーで計測し、差が 5 mm 以内であることを確認。大きなずれはフレーム歪みの可能性があり最重要欠陥。',
+          severity: 'critical',
+        },
+        {
           id: 'ext.paint',
           title: '左右サイドの塗装：傷・色ムラ・ピンホール',
           description:
@@ -291,6 +322,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           severity: 'major',
         },
         {
+          id: 'yl.rear-entertainment',
+          title: '後席エンタメスクリーン (装備グレードのみ)',
+          description:
+            '後席センターコンソール上のタッチスクリーン (装備グレード) でビデオ再生・音量調整・エアコン操作ができるか確認。グレードにより未装備の場合は該当なし (対象外) でチェック。',
+          severity: 'minor',
+          applicableTo: ['Performance'],
+        },
+        {
           id: 'yl.usb',
           title: '2 列目 / 3 列目 USB-C ポートの通電と本数',
           description:
@@ -325,6 +364,13 @@ export const modelYLTemplate: ChecklistTemplate = {
           title: '3 列目シート：背もたれ角度・ヘッドルーム・固定',
           description:
             '大人が短時間座れるか、固定やガタつきも確認。',
+          severity: 'major',
+        },
+        {
+          id: 'yl.rear-seat-fold',
+          title: '後席シート：フラット収納・展開',
+          description:
+            '2 列目の前倒し・復帰、3 列目の格納／展開、ロックのかかり方と床のフラット感を確認。',
           severity: 'major',
         },
         {
@@ -369,6 +415,20 @@ export const modelYLTemplate: ChecklistTemplate = {
           title: 'オーディオ：全スピーカーの音抜けチェック',
           description:
             'バランス／フェーダーをまわして 1 スピーカーずつ音が出るか。',
+          severity: 'minor',
+        },
+        {
+          id: 'int.odor',
+          title: '内装の異臭・タバコ臭・接着剤臭',
+          description:
+            '車内に乗り込んで強い接着剤臭・塗料臭・タバコ臭がないか確認。工場出荷直後は多少の揮発臭があるが、刺激臭が強い場合は要確認。',
+          severity: 'minor',
+        },
+        {
+          id: 'int.dome-light',
+          title: 'ドームライト：点灯・ドア連動',
+          description:
+            '前後席それぞれで点灯、タッチ操作、ドア開閉に連動して自然にオン／オフするか。',
           severity: 'minor',
         },
         {
@@ -423,6 +483,13 @@ export const modelYLTemplate: ChecklistTemplate = {
           severity: 'major',
         },
         {
+          id: 'fn.seatbelts',
+          title: '全席シートベルト：着脱・警告表示',
+          description:
+            '1〜3 列すべてでバックル挿入・解除、巻取り、着座検知と警告表示／警告音を確認。',
+          severity: 'critical',
+        },
+        {
           id: 'fn.signals',
           title: 'ターンシグナル / ハザード',
           description:
@@ -455,6 +522,13 @@ export const modelYLTemplate: ChecklistTemplate = {
           title: 'Autopilot キャリブレーションの進み具合を確認',
           description:
             '納車後、安全な道で数 km の走行が必要。納車時点では未完でも OK。',
+          severity: 'minor',
+        },
+        {
+          id: 'fn.voice-nav',
+          title: 'ナビ／音声認識：目的地設定',
+          description:
+            '住所や施設名を話して認識できるか、候補選択からナビ開始まで操作できるか。',
           severity: 'minor',
         },
         {
@@ -553,6 +627,13 @@ export const modelYLTemplate: ChecklistTemplate = {
           description:
             '納車時点で気付いた問題が、Tesla の修正リストに書面で残っているか。',
           severity: 'critical',
+        },
+        {
+          id: 'af.photos',
+          title: '全体・問題箇所の写真を撮影・保存',
+          description:
+            '納車時の外観・内観・メーター・書類をすべて撮影しておく。後日の保証申請・修理時の証拠になる。このアプリの写真添付機能を活用。',
+          severity: 'major',
         },
         {
           id: 'af.service-appt',

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -34,8 +34,10 @@ export default function ChecklistPage() {
   const bulkSetStatus = useProgress((s) => s.bulkSetStatus);
   const bulkClearStatus = useProgress((s) => s.bulkClearStatus);
   const importSnapshot = useProgress((s) => s.importSnapshot);
+  const lastCheckedItemId = useProgress((s) => s.lastCheckedItemId);
   const template = getTemplate(snapshot.meta.modelId);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const didScrollRef = useRef(false);
 
   const scopedCategories = useMemo(
     () => getScopedCategories(template, severityFilter),
@@ -71,6 +73,32 @@ export default function ChecklistPage() {
     }
     return next;
   }, [scopedCategories, snapshot.states]);
+
+  // Total progress numbers used in the resume banner
+  const { totalItems, checkedItems } = useMemo(() => {
+    let total = 0;
+    let checked = 0;
+    for (const cat of template.categories) {
+      for (const item of cat.items) {
+        total++;
+        const st = snapshot.states[item.id]?.status;
+        if (st && st !== 'unchecked') checked++;
+      }
+    }
+    return { totalItems: total, checkedItems: checked };
+  }, [snapshot, template]);
+
+  // Scroll to the last checked item on first mount (resume UX)
+  useEffect(() => {
+    if (didScrollRef.current || !lastCheckedItemId) return;
+    didScrollRef.current = true;
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-testid="item-${lastCheckedItemId}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }, [lastCheckedItemId]);
 
   function cloneSnapshot(value: ChecklistSnapshot): ChecklistSnapshot {
     return JSON.parse(JSON.stringify(value)) as ChecklistSnapshot;
@@ -116,6 +144,19 @@ export default function ChecklistPage() {
           動線に沿って確認できます。表示中の範囲だけで集計・一括操作されます。
         </p>
       </div>
+
+      {lastCheckedItemId && checkedItems > 0 && (
+        <div
+          className="flex items-center justify-between rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm"
+          data-testid="resume-banner"
+        >
+          <span className="text-muted-foreground">
+            前回の続きから — <span className="font-medium text-foreground">{checkedItems} 件チェック済み</span>
+            {' / 残り '}
+            <span className="font-medium text-foreground">{totalItems - checkedItems} 件</span>
+          </span>
+        </div>
+      )}
 
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
