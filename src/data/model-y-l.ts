@@ -130,7 +130,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'ext.lights',
-          title: 'ヘッドライト／テールライト：結露・点灯',
+          title: 'ヘッドライト／テールライト／ブレーキランプ：結露・点灯',
           description: 'ロー・ハイ・デイライト・ターン・ブレーキ・リバース・リアフォグまで一通り点灯確認。',
           severity: 'major',
         },
@@ -208,6 +208,12 @@ export const modelYLTemplate: ChecklistTemplate = {
           severity: 'minor',
         },
         {
+          id: 'int.dome-light',
+          title: 'ドームライト：点灯・ドア連動',
+          description: '前後席それぞれで点灯、タッチ操作、ドア開閉に連動して自然にオン／オフするか。',
+          severity: 'minor',
+        },
+        {
           id: 'int.frunk',
           title: 'フランク：開閉・ライナー固定',
           description: '電動フランクの上下動作、内装ライナーの取付。',
@@ -215,8 +221,8 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'int.trunk',
-          title: 'ラゲッジ：トノカバー・12V/USB-C・サブトランク',
-          description: '3 列目を畳んだ後の床の段差、サブトランクのカーペット固定。',
+          title: 'ラゲッジ／電動トランク：開閉・トノカバー・12V/USB-C・サブトランク',
+          description: '電動トランクの開閉、3 列目を畳んだ後の床の段差、サブトランクのカーペット固定。',
           severity: 'major',
         },
         {
@@ -228,7 +234,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         {
           id: 'int.audio',
           title: 'オーディオ：全スピーカーの音抜けチェック',
-          description: 'バランス／フェーダーをまわして 1 スピーカーずつ音が出るか。',
+          description: 'YouTube Music などの音源で、バランス／フェーダーをまわしながら 1 スピーカーずつ音が出るか。',
           severity: 'minor',
         },
       ],
@@ -266,6 +272,12 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'yl.row3-seats',
           title: '3 列目シート：背もたれ角度・ヘッドルーム・固定',
           description: '大人が短時間座れるか、シートベルトのアンカー位置と巻取り。',
+          severity: 'major',
+        },
+        {
+          id: 'yl.rear-seat-fold',
+          title: '後席シート：フラット収納・展開',
+          description: '2 列目の前倒し・復帰、3 列目の格納／展開、ロックのかかり方と床のフラット感を確認。',
           severity: 'major',
         },
         {
@@ -336,6 +348,12 @@ export const modelYLTemplate: ChecklistTemplate = {
           severity: 'minor',
         },
         {
+          id: 'fn.seatbelts',
+          title: '全席シートベルト：着脱・警告表示',
+          description: '1〜3 列すべてでバックル挿入・解除、巻取り、着座検知と警告表示／警告音を確認。',
+          severity: 'critical',
+        },
+        {
           id: 'fn.hvac',
           title: 'HVAC：冷房・暖房・HEPA・除湿',
           description: '冷えと暖まりの速さ、ファン段階、Bioweapon Defense Mode (装備時) の起動。',
@@ -345,6 +363,12 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.heated-steering',
           title: 'ステアリングヒーター',
           description: '触れて十分に暖まるか。',
+          severity: 'minor',
+        },
+        {
+          id: 'fn.voice-nav',
+          title: 'ナビ／音声認識：目的地設定',
+          description: '住所や施設名を話して認識できるか、候補選択からナビ開始まで操作できるか。',
           severity: 'minor',
         },
         {
