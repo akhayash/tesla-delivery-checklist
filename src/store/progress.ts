@@ -5,6 +5,8 @@ import { defaultModelId } from '@/data/templates';
 
 interface ProgressState {
   snapshot: ChecklistSnapshot;
+  /** The id of the last item that was checked (ok / issue / na). Persisted to localStorage. */
+  lastCheckedItemId: string | null;
   setStatus: (itemId: string, status: ItemStatus) => void;
   setNote: (itemId: string, note: string) => void;
   addMedia: (itemId: string, mediaId: string) => void;
@@ -13,6 +15,8 @@ interface ProgressState {
   switchModel: (modelId: string) => void;
   reset: () => void;
   importSnapshot: (snap: ChecklistSnapshot) => void;
+  /** Manually override the last-checked pointer (used by scroll-restore logic). */
+  setLastCheckedItemId: (id: string | null) => void;
 }
 
 function initialSnapshot(modelId: string = defaultModelId): ChecklistSnapshot {
@@ -54,8 +58,13 @@ export const useProgress = create<ProgressState>()(
   persist(
     (set) => ({
       snapshot: initialSnapshot(),
+      lastCheckedItemId: null,
       setStatus: (itemId, status) =>
-        set((s) => ({ snapshot: upsertItem(s.snapshot, itemId, { status }) })),
+        set((s) => ({
+          snapshot: upsertItem(s.snapshot, itemId, { status }),
+          // Track last actively-checked item (not "unchecked" resets)
+          lastCheckedItemId: status !== 'unchecked' ? itemId : s.lastCheckedItemId,
+        })),
       setNote: (itemId, note) =>
         set((s) => ({ snapshot: upsertItem(s.snapshot, itemId, { note }) })),
       addMedia: (itemId, mediaId) =>
@@ -81,10 +90,11 @@ export const useProgress = create<ProgressState>()(
             meta: { ...s.snapshot.meta, ...meta },
           }),
         })),
-      switchModel: (modelId) => set({ snapshot: initialSnapshot(modelId) }),
+      switchModel: (modelId) => set({ snapshot: initialSnapshot(modelId), lastCheckedItemId: null }),
       reset: () =>
-        set((s) => ({ snapshot: initialSnapshot(s.snapshot.meta.modelId) })),
+        set((s) => ({ snapshot: initialSnapshot(s.snapshot.meta.modelId), lastCheckedItemId: null })),
       importSnapshot: (snap) => set({ snapshot: snap }),
+      setLastCheckedItemId: (id) => set({ lastCheckedItemId: id }),
     }),
     {
       name: 'tesla-delivery-progress',

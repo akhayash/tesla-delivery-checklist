@@ -4,6 +4,7 @@ import {
   Download,
   RefreshCw,
   Upload,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,9 +19,19 @@ import { Separator } from '@/components/ui/separator';
 import { useProgress } from '@/store/progress';
 import { exportJson, importJson, type JsonExport } from '@/lib/reportJson';
 import { downloadBlob } from '@/lib/shareApi';
-import { getStorageUsage, listAllMedia, deleteMany } from '@/store/media';
+import { getStorageUsage, listAllMedia, deleteMany, type StoredMedia } from '@/store/media';
+import { getTemplate } from '@/data/templates';
 import { fileSize } from '@/lib/utils';
 import { toast } from 'sonner';
+
+/** Media grouped by itemId with totals. */
+interface MediaGroup {
+  itemId: string;
+  title: string;
+  count: number;
+  totalSize: number;
+  mediaIds: string[];
+}
 
 export default function SettingsPage() {
   const snapshot = useProgress((s) => s.snapshot);
@@ -28,11 +39,44 @@ export default function SettingsPage() {
   const importSnapshot = useProgress((s) => s.importSnapshot);
   const [usage, setUsage] = useState<{ used: number; quota: number } | null>(null);
   const [mediaCount, setMediaCount] = useState(0);
+  const [mediaGroups, setMediaGroups] = useState<MediaGroup[]>([]);
   const [confirmReset, setConfirmReset] = useState(false);
 
+  const template = getTemplate(snapshot.meta.modelId);
+
+  // Build a title lookup from the template
+  const itemTitleMap = new Map<string, string>(
+    template.categories.flatMap((cat) => cat.items.map((item) => [item.id, item.title]))
+  );
+
+  async function refreshMedia() {
+    const [usageResult, allMedia] = await Promise.all([getStorageUsage(), listAllMedia()]);
+    setUsage(usageResult);
+    setMediaCount(allMedia.length);
+
+    // Group by itemId
+    const groups = new Map<string, StoredMedia[]>();
+    for (const m of allMedia) {
+      if (!groups.has(m.itemId)) groups.set(m.itemId, []);
+      groups.get(m.itemId)!.push(m);
+    }
+    const built: MediaGroup[] = [];
+    groups.forEach((items, itemId) => {
+      built.push({
+        itemId,
+        title: itemTitleMap.get(itemId) ?? itemId,
+        count: items.length,
+        totalSize: items.reduce((s, m) => s + m.size, 0),
+        mediaIds: items.map((m) => m.id),
+      });
+    });
+    built.sort((a, b) => b.totalSize - a.totalSize);
+    setMediaGroups(built);
+  }
+
   useEffect(() => {
-    getStorageUsage().then(setUsage);
-    listAllMedia().then((all) => setMediaCount(all.length));
+    void refreshMedia();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot]);
 
   async function handleExport() {
@@ -61,7 +105,14 @@ export default function SettingsPage() {
     const list = await listAllMedia();
     await deleteMany(list.map((m) => m.id));
     setMediaCount(0);
+    setMediaGroups([]);
     toast.success(`${list.length} 件のメディアを削除しました`);
+  }
+
+  async function clearItemMedia(group: MediaGroup) {
+    await deleteMany(group.mediaIds);
+    toast.success(`「${group.title}」のメディア ${group.count} 件を削除しました`);
+    await refreshMedia();
   }
 
   return (
@@ -119,9 +170,42 @@ export default function SettingsPage() {
                 <span className="text-muted-foreground">利用可能</span>
                 <span className="tabular">{fileSize(usage.quota)}</span>
               </div>
+              {usage.quota > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">使用率</span>
+                  <span className={`tabular font-medium ${usage.used / usage.quota > 0.8 ? 'text-accent' : ''}`}>
+                    {Math.round((usage.used / usage.quota) * 100)}%
+                  </span>
+                </div>
+              )}
             </>
           )}
           <Separator />
+          {mediaGroups.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">項目別メディア</p>
+              <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
+                {mediaGroups.map((g) => (
+                  <div key={g.itemId} className="flex items-center justify-between gap-2 text-xs">
+                    <span className="min-w-0 flex-1 truncate" title={g.title}>{g.title}</span>
+                    <span className="shrink-0 text-muted-foreground tabular">
+                      {g.count} 件 · {fileSize(g.totalSize)}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 shrink-0 px-1.5 text-muted-foreground hover:text-accent"
+                      onClick={() => clearItemMedia(g)}
+                      aria-label={`${g.title} のメディアを削除`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <Separator />
+            </div>
+          )}
           <Button onClick={clearAllMedia} variant="outline" className="w-full">
             すべてのメディアを削除
           </Button>

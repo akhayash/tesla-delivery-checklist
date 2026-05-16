@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Camera, Film, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { resizeImage } from '@/lib/imageResize';
-import { saveMedia, getMedia, deleteMedia, type StoredMedia } from '@/store/media';
+import { saveMedia, getMedia, deleteMedia, getStorageRatio, type StoredMedia } from '@/store/media';
 import { useProgress } from '@/store/progress';
 import { fileSize } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -33,6 +33,15 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
     if (!files || files.length === 0) return;
     setBusy(true);
     try {
+      // Check storage capacity before saving
+      const ratio = await getStorageRatio();
+      if (ratio !== null && ratio > 0.8) {
+        toast.warning(
+          `ストレージの使用率が ${Math.round(ratio * 100)}% です。容量不足で保存に失敗することがあります。設定画面から不要なメディアを削除してください。`,
+          { duration: 6000, id: 'storage-warn' }
+        );
+      }
+
       for (const file of Array.from(files)) {
         let blob: Blob = file;
         let size = file.size;
@@ -49,15 +58,31 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
         } else if (size > 50 * 1024 * 1024) {
           toast.warning('大きめの動画 (50MB 超) です。共有時に注意してください。');
         }
-        const saved = await saveMedia({
-          itemId,
-          kind,
-          mimeType: blob.type || (kind === 'image' ? 'image/jpeg' : 'video/mp4'),
-          size,
-          blob,
-        });
-        addMedia(itemId, saved.id);
-        setMedia((prev) => [...prev, saved]);
+        try {
+          const saved = await saveMedia({
+            itemId,
+            kind,
+            mimeType: blob.type || (kind === 'image' ? 'image/jpeg' : 'video/mp4'),
+            size,
+            blob,
+          });
+          addMedia(itemId, saved.id);
+          setMedia((prev) => [...prev, saved]);
+        } catch (e) {
+          console.error(e);
+          const isQuota =
+            e instanceof DOMException && e.name === 'QuotaExceededError';
+          const isIdb =
+            typeof e === 'object' && e !== null && (e as { code?: string }).code === 'IDB_WRITE_FAILED';
+          if (isQuota || isIdb) {
+            toast.error(
+              'ストレージへの保存に失敗しました。設定画面から不要なメディアを削除してから再試行してください。',
+              { duration: 8000 }
+            );
+          } else {
+            toast.error('メディアの保存に失敗しました');
+          }
+        }
       }
     } catch (e) {
       console.error(e);

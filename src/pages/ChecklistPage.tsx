@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -12,8 +12,11 @@ import { ChecklistItemRow } from '@/components/ChecklistItemRow';
 
 export default function ChecklistPage() {
   const snapshot = useProgress((s) => s.snapshot);
+  const lastCheckedItemId = useProgress((s) => s.lastCheckedItemId);
   const template = getTemplate(snapshot.meta.modelId);
+  const didScrollRef = useRef(false);
 
+  // Count totals for badges
   const counts = useMemo(() => {
     const c: Record<string, { total: number; checked: number; issues: number }> = {};
     for (const cat of template.categories) {
@@ -31,6 +34,44 @@ export default function ChecklistPage() {
     return c;
   }, [snapshot, template]);
 
+  // Total progress numbers used in the resume banner
+  const { totalItems, checkedItems } = useMemo(() => {
+    let total = 0;
+    let checked = 0;
+    for (const cat of template.categories) {
+      for (const item of cat.items) {
+        total++;
+        const st = snapshot.states[item.id]?.status;
+        if (st && st !== 'unchecked') checked++;
+      }
+    }
+    return { totalItems: total, checkedItems: checked };
+  }, [snapshot, template]);
+
+  // Scroll to the last checked item on first mount (resume UX)
+  useEffect(() => {
+    if (didScrollRef.current || !lastCheckedItemId) return;
+    didScrollRef.current = true;
+    // Wait one frame for the DOM to settle
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-testid="item-${lastCheckedItemId}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }, [lastCheckedItemId]);
+
+  // Warn before closing if any items are checked (protect against accidental close)
+  useEffect(() => {
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      if (checkedItems > 0) {
+        e.preventDefault();
+      }
+    }
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [checkedItems]);
+
   return (
     <div className="space-y-3">
       <div>
@@ -39,6 +80,19 @@ export default function ChecklistPage() {
           項目をタップして OK / 問題 / 対象外 を記録。問題ありの項目には写真や動画を添付できます。
         </p>
       </div>
+
+      {lastCheckedItemId && checkedItems > 0 && (
+        <div
+          className="flex items-center justify-between rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm"
+          data-testid="resume-banner"
+        >
+          <span className="text-muted-foreground">
+            前回の続きから — <span className="font-medium text-foreground">{checkedItems} 件チェック済み</span>
+            {' / 残り '}
+            <span className="font-medium text-foreground">{totalItems - checkedItems} 件</span>
+          </span>
+        </div>
+      )}
 
       <Accordion type="multiple" defaultValue={template.categories.map((c) => c.id)}>
         {template.categories.map((cat) => {

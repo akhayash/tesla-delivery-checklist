@@ -17,6 +17,17 @@ function randomId(): string {
   return `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/** Returns storage usage ratio [0, 1], or null if the API is unavailable. */
+export async function getStorageRatio(): Promise<number | null> {
+  if (typeof navigator !== 'undefined' && 'storage' in navigator && navigator.storage.estimate) {
+    const est = await navigator.storage.estimate();
+    const quota = est.quota ?? 0;
+    if (quota === 0) return null;
+    return (est.usage ?? 0) / quota;
+  }
+  return null;
+}
+
 export async function saveMedia(
   params: Omit<StoredMedia, 'id' | 'createdAt'>
 ): Promise<StoredMedia> {
@@ -25,7 +36,12 @@ export async function saveMedia(
     id: randomId(),
     createdAt: new Date().toISOString(),
   };
-  await set(media.id, media, store);
+  try {
+    await set(media.id, media, store);
+  } catch (e) {
+    // IndexedDB write failed – surface as a typed error so callers can handle it
+    throw Object.assign(new Error('IndexedDB write failed'), { cause: e, code: 'IDB_WRITE_FAILED' });
+  }
   return media;
 }
 
