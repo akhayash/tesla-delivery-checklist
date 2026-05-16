@@ -1,0 +1,47 @@
+name: Auto-assign next issue to Copilot
+
+# Detects when the v0.2 rework PR (closing Issue #5) is merged to main,
+# then automatically assigns the v0.3 follow-up Issue #7 to the Copilot
+# Coding Agent so work continues without manual intervention.
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  assign-next:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: If this PR closed Issue #5 (v0.2), assign #7 (v0.3) to Copilot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # GraphQL returns issues this PR closes via closingIssuesReferences.
+          closes=$(gh api graphql -f query='
+            query($owner:String!,$name:String!,$pr:Int!) {
+              repository(owner:$owner,name:$name) {
+                pullRequest(number:$pr) {
+                  closingIssuesReferences(first:20) { nodes { number } }
+                }
+              }
+            }
+          ' -F owner="${REPO%/*}" -F name="${REPO#*/}" -F pr="$PR_NUMBER" \
+            --jq '.data.repository.pullRequest.closingIssuesReferences.nodes[].number' || true)
+
+          echo "PR #$PR_NUMBER closes issues: $closes"
+
+          if echo "$closes" | grep -qx '5'; then
+            echo "Detected v0.2 (Issue #5) merge — assigning Issue #7 to Copilot"
+            gh issue edit 7 --repo "$REPO" --add-assignee copilot-swe-agent
+            gh issue comment 7 --repo "$REPO" --body "🤖 PR #${PR_NUMBER} (v0.2) のマージを検知したため、Copilot Coding Agent に自動アサインしました。"
+          else
+            echo "PR did not close Issue #5; skipping."
+          fi
