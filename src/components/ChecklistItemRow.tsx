@@ -58,7 +58,7 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
       <div className="mt-3">
         <ToggleGroup
           type="single"
-          value={status === 'unchecked' ? '' : status}
+          value={status}
           onValueChange={(v) => v && setStatus(item.id, v as ItemStatus)}
           className="w-full"
           variant="outline"
@@ -87,9 +87,9 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
           <ToggleGroupItem
             value="unchecked"
             className="flex-1"
-            aria-label="未確認に戻す"
+            aria-label="未チェック"
           >
-            <Circle className="h-4 w-4" /> 未
+            <Circle className="h-4 w-4" /> 未チェック
           </ToggleGroupItem>
         </ToggleGroup>
       </div>

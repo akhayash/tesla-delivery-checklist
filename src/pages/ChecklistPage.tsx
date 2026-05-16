@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -6,61 +6,242 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { getTemplate } from '@/data/templates';
+import type { ChecklistSnapshot, ItemStatus } from '@/data/schema';
 import { useProgress } from '@/store/progress';
 import { ChecklistItemRow } from '@/components/ChecklistItemRow';
+import {
+  getScopedCategories,
+  getScopedItemIds,
+  severityFilterMeta,
+} from '@/lib/checklistScope';
+import { toast } from 'sonner';
+
+type ConfirmAction = 'issue' | 'clear' | null;
 
 export default function ChecklistPage() {
   const snapshot = useProgress((s) => s.snapshot);
+  const severityFilter = useProgress((s) => s.severityFilter);
+  const setSeverityFilter = useProgress((s) => s.setSeverityFilter);
+  const bulkSetStatus = useProgress((s) => s.bulkSetStatus);
+  const bulkClearStatus = useProgress((s) => s.bulkClearStatus);
+  const importSnapshot = useProgress((s) => s.importSnapshot);
   const template = getTemplate(snapshot.meta.modelId);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+
+  const scopedCategories = useMemo(
+    () => getScopedCategories(template, severityFilter),
+    [severityFilter, template]
+  );
+
+  const visibleItemIds = useMemo(
+    () => getScopedItemIds(template, severityFilter),
+    [severityFilter, template]
+  );
+
+  const uncheckedItemIds = useMemo(
+    () =>
+      visibleItemIds.filter(
+        (itemId) => (snapshot.states[itemId]?.status ?? 'unchecked') === 'unchecked'
+      ),
+    [snapshot.states, visibleItemIds]
+  );
 
   const counts = useMemo(() => {
-    const c: Record<string, { total: number; checked: number; issues: number }> = {};
-    for (const cat of template.categories) {
+    const next: Record<string, { total: number; checked: number; issues: number }> = {};
+    for (const category of scopedCategories) {
       let total = 0;
       let checked = 0;
       let issues = 0;
-      for (const item of cat.items) {
+      for (const item of category.items) {
         total++;
-        const st = snapshot.states[item.id]?.status;
-        if (st && st !== 'unchecked') checked++;
-        if (st === 'issue') issues++;
+        const status = snapshot.states[item.id]?.status ?? 'unchecked';
+        if (status !== 'unchecked') checked++;
+        if (status === 'issue') issues++;
       }
-      c[cat.id] = { total, checked, issues };
+      next[category.id] = { total, checked, issues };
     }
-    return c;
-  }, [snapshot, template]);
+    return next;
+  }, [scopedCategories, snapshot.states]);
+
+  function cloneSnapshot(value: ChecklistSnapshot): ChecklistSnapshot {
+    return JSON.parse(JSON.stringify(value)) as ChecklistSnapshot;
+  }
+
+  function showUndoToast(message: string, previousSnapshot: ChecklistSnapshot) {
+    toast.success(message, {
+      duration: 5000,
+      action: {
+        label: 'Undo',
+        onClick: () => importSnapshot(previousSnapshot),
+      },
+    });
+  }
+
+  function applyBulkStatus(status: Exclude<ItemStatus, 'unchecked'>) {
+    if (uncheckedItemIds.length === 0) return;
+    const previousSnapshot = cloneSnapshot(snapshot);
+    bulkSetStatus(uncheckedItemIds, status);
+    showUndoToast(
+      `表示中の未チェック ${uncheckedItemIds.length} 件を ${
+        status === 'ok' ? 'OK' : status === 'issue' ? '問題あり' : '対象外'
+      } にしました`,
+      previousSnapshot
+    );
+  }
+
+  function applyClear() {
+    if (visibleItemIds.length === 0) return;
+    const previousSnapshot = cloneSnapshot(snapshot);
+    bulkClearStatus(visibleItemIds);
+    showUndoToast(
+      `表示中の ${visibleItemIds.length} 件を未チェックに戻しました`,
+      previousSnapshot
+    );
+  }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div>
         <h2 className="font-display text-xl">{template.modelNameJa}</h2>
         <p className="text-xs text-muted-foreground">
-          項目をタップして OK / 問題 / 対象外 を記録。問題ありの項目には写真や動画を添付できます。
+          動線に沿って確認できます。表示中の範囲だけで集計・一括操作されます。
         </p>
       </div>
 
-      <Accordion type="multiple" defaultValue={template.categories.map((c) => c.id)}>
-        {template.categories.map((cat) => {
-          const c = counts[cat.id];
+      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-sm font-medium">重要度フィルタ</p>
+            <p className="text-xs text-muted-foreground">
+              {severityFilterMeta[severityFilter].label} ·{' '}
+              {severityFilterMeta[severityFilter].description}
+            </p>
+          </div>
+          <Badge variant="outline" className="tabular">
+            表示中 {visibleItemIds.length} 件
+          </Badge>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-3">
+          {(['critical', 'standard', 'all'] as const).map((mode) => (
+            <Button
+              key={mode}
+              type="button"
+              variant={severityFilter === mode ? 'accent' : 'outline'}
+              size="sm"
+              className="justify-between"
+              onClick={() => setSeverityFilter(mode)}
+              data-testid={`checklist-filter-${mode}`}
+            >
+              <span>{severityFilterMeta[mode].label}</span>
+              <span className="text-[11px] opacity-80">
+                {severityFilterMeta[mode].description}
+              </span>
+            </Button>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-sm font-medium">一括ショートカット</p>
+            <p className="text-xs text-muted-foreground" data-testid="bulk-preview">
+              現在未チェックの {uncheckedItemIds.length} 件に適用します。未チェックへ戻す操作は
+              表示中の {visibleItemIds.length} 件が対象です。
+            </p>
+          </div>
+          <Badge variant="outline" className="tabular">
+            {severityFilterMeta[severityFilter].label}
+          </Badge>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="justify-start"
+            onClick={() => applyBulkStatus('ok')}
+            disabled={uncheckedItemIds.length === 0}
+            data-testid="bulk-ok"
+          >
+            🟢 未選択を全て OK にする
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="justify-start"
+            onClick={() => setConfirmAction('issue')}
+            disabled={uncheckedItemIds.length === 0}
+            data-testid="bulk-issue"
+          >
+            🔴 未選択を全て 問題あり にする
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="justify-start"
+            onClick={() => applyBulkStatus('na')}
+            disabled={uncheckedItemIds.length === 0}
+            data-testid="bulk-na"
+          >
+            ⚪ 未選択を全て 対象外 にする
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="justify-start"
+            onClick={() => setConfirmAction('clear')}
+            disabled={visibleItemIds.length === 0}
+            data-testid="bulk-clear"
+          >
+            🧹 全項目を 未チェック に戻す
+          </Button>
+        </div>
+      </section>
+
+      <Accordion
+        key={severityFilter}
+        type="multiple"
+        defaultValue={scopedCategories.map((category) => category.id)}
+      >
+        {scopedCategories.map((category) => {
+          const categoryCount = counts[category.id];
           return (
-            <AccordionItem key={cat.id} value={cat.id} data-testid={`cat-${cat.id}`}>
+            <AccordionItem
+              key={category.id}
+              value={category.id}
+              data-testid={`cat-${category.id}`}
+            >
               <AccordionTrigger>
                 <div className="flex flex-1 items-center justify-between gap-3 pr-2">
-                  <span>{cat.title}</span>
+                  <span>{category.title}</span>
                   <span className="flex items-center gap-1.5">
-                    {c.issues > 0 && (
-                      <Badge variant="destructive">問題 {c.issues}</Badge>
+                    {categoryCount.issues > 0 && (
+                      <Badge variant="destructive">問題 {categoryCount.issues}</Badge>
                     )}
                     <Badge variant="muted" className="tabular">
-                      {c.checked}/{c.total}
+                      {categoryCount.checked}/{categoryCount.total}
                     </Badge>
                   </span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-2">
-                  {cat.items.map((item) => (
+                  {category.locationHint && (
+                    <div className="rounded-xl border border-border/70 bg-secondary/40 px-3 py-2 text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">📍 ここで確認</span>{' '}
+                      {category.locationHint}
+                    </div>
+                  )}
+                  {category.items.map((item) => (
                     <ChecklistItemRow key={item.id} item={item} />
                   ))}
                 </div>
@@ -69,6 +250,46 @@ export default function ChecklistPage() {
           );
         })}
       </Accordion>
+
+      <Dialog open={confirmAction !== null} onOpenChange={(open) => !open && setConfirmAction(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {confirmAction === 'issue'
+                ? '未選択をすべて問題ありにしますか？'
+                : '表示中の項目を未チェックに戻しますか？'}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmAction === 'issue'
+                ? `現在未チェックの ${uncheckedItemIds.length} 件を問題ありにします。誤操作を防ぐため確認しています。`
+                : `現在表示中の ${visibleItemIds.length} 件を未チェックへ戻します。`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex-1"
+              onClick={() => setConfirmAction(null)}
+            >
+              キャンセル
+            </Button>
+            <Button
+              type="button"
+              variant={confirmAction === 'issue' ? 'destructive' : 'accent'}
+              className="flex-1"
+              onClick={() => {
+                if (confirmAction === 'issue') applyBulkStatus('issue');
+                if (confirmAction === 'clear') applyClear();
+                setConfirmAction(null);
+              }}
+              data-testid="bulk-confirm"
+            >
+              実行する
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -14,7 +14,7 @@ const statusLabel: Record<ItemStatus, string> = {
   ok: 'OK',
   issue: '問題あり',
   na: '対象外',
-  unchecked: '未確認',
+  unchecked: '未チェック',
 };
 
 const statusVariant: Record<ItemStatus, 'success' | 'destructive' | 'muted' | 'warning'> = {

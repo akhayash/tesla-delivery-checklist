@@ -25,13 +25,16 @@ import { QrCode } from '@/components/QrCode';
 import { getAppUrl } from '@/lib/appUrl';
 import { getTemplate, listTemplates } from '@/data/templates';
 import { useProgress } from '@/store/progress';
+import { severityFilterMeta } from '@/lib/checklistScope';
 import { toast } from 'sonner';
 
 export default function HomePage() {
   const modelId = useProgress((s) => s.snapshot.meta.modelId);
+  const severityFilter = useProgress((s) => s.severityFilter);
   const template = getTemplate(modelId);
   const templates = listTemplates();
   const switchModel = useProgress((s) => s.switchModel);
+  const setSeverityFilter = useProgress((s) => s.setSeverityFilter);
   const [copied, setCopied] = useState(false);
   const appUrl = getAppUrl();
 
@@ -90,6 +93,34 @@ export default function HomePage() {
                 data-active={t.modelId === modelId}
               >
                 {t.modelName}
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>チェック範囲</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            忙しいときは重大項目だけに絞って開始できます。選択はこの端末に保存されます。
+          </p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {(['critical', 'standard', 'all'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setSeverityFilter(mode)}
+                className="rounded-xl border border-border px-4 py-3 text-left transition-colors hover:border-accent hover:bg-secondary/40 data-[active=true]:border-accent data-[active=true]:bg-accent/5"
+                data-active={severityFilter === mode}
+                data-testid={`severity-${mode}`}
+              >
+                <p className="text-sm font-medium">{severityFilterMeta[mode].label}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {severityFilterMeta[mode].description}
+                </p>
               </button>
             ))}
           </div>

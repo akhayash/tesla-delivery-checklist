@@ -185,7 +185,7 @@ export default function SummaryPage() {
             <Badge variant="success">OK {totals.ok}</Badge>
             <Badge variant="destructive">問題 {totals.issue}</Badge>
             <Badge variant="muted">対象外 {totals.na}</Badge>
-            <Badge variant="warning">未確認 {totals.unchecked}</Badge>
+            <Badge variant="warning">未チェック {totals.unchecked}</Badge>
             <Badge variant="outline">合計 {totals.total}</Badge>
           </CardContent>
         </Card>
