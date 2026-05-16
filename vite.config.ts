@@ -42,6 +42,9 @@ export default defineConfig({
       workbox: {
         navigateFallback: `${repoBase}index.html`,
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest,woff2}'],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
