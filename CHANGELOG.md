@@ -4,6 +4,13 @@
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従い、
 CHANGELOG は [release-please](https://github.com/googleapis/release-please) により自動生成されます。
 
+## [1.3.0](https://github.com/akhayash/tesla-delivery-checklist/compare/v1.2.1...v1.3.0) (2026-05-16)
+
+
+### Features
+
+* **ui:** add PWA install guide dialog (Japanese, platform-aware) ([#27](https://github.com/akhayash/tesla-delivery-checklist/issues/27)) ([c6791fe](https://github.com/akhayash/tesla-delivery-checklist/commit/c6791fe50553af972e901a0cd001d7bd58fc21ec))
+
 ## [1.2.1](https://github.com/akhayash/tesla-delivery-checklist/compare/v1.2.0...v1.2.1) (2026-05-16)
 
 
