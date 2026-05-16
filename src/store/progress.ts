@@ -10,7 +10,7 @@ import type {
 import { defaultModelId, getTemplate } from '@/data/templates';
 import { deleteMany } from '@/store/media';
 
-const CURRENT_TEMPLATE_VERSION = '0.4.0';
+const CURRENT_TEMPLATE_VERSION = '0.5.0';
 
 interface ProgressState {
   snapshot: ChecklistSnapshot;

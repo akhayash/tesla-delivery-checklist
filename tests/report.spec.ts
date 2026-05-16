@@ -1,26 +1,54 @@
 import { test, expect } from './fixtures';
 
-test('HTML / Markdown / JSON レポートをダウンロードできる', async ({ freshPage: page }) => {
-  await page.getByRole('link', { name: /チェックを開始/ }).click();
-  const item = page.getByTestId('item-ext.panel-gaps');
-  await item.scrollIntoViewIfNeeded();
-  await item.getByRole('radio', { name: '問題あり' }).click();
-  await item.getByTestId('note-ext.panel-gaps').fill('テストメモ');
+test('HomePage: アコーディオンが初期表示で閉じている', async ({ freshPage: page }) => {
+  const trigger = page.getByRole('button', { name: /車両情報/ });
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+});
 
+test('HomePage: アコーディオンを開くと車両情報が表示される', async ({ freshPage: page }) => {
+  const trigger = page.getByRole('button', { name: /車両情報/ });
+  await trigger.click();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  // Vehicle spec content should be visible
+  await expect(page.getByText(/Model Y/)).toBeVisible();
+});
+
+test('SummaryPage: Markdown / JSON ボタンが存在しない', async ({ freshPage: page }) => {
+  await page.getByRole('link', { name: /チェックを開始/ }).click();
   await page.getByRole('link', { name: 'レポート' }).click();
   await expect(page).toHaveURL(/#\/summary/);
-  // Issue list shows our problem
-  await expect(page.getByTestId('issue-ext.panel-gaps')).toContainText('テストメモ');
+  await expect(page.getByTestId('export-md')).toHaveCount(0);
+  await expect(page.getByTestId('export-json')).toHaveCount(0);
+});
 
-  // HTML download
-  const html = await downloadOnClick(page, 'export-html');
-  expect(html.suggestedFilename()).toMatch(/\.html$/);
+test('SummaryPage → /report/preview に遷移して iframe が描画される', async ({ freshPage: page }) => {
+  await page.getByRole('link', { name: /チェックを開始/ }).click();
+  await page.getByRole('link', { name: 'レポート' }).click();
+  await expect(page).toHaveURL(/#\/summary/);
+  await page.getByTestId('preview-btn').click();
+  await expect(page).toHaveURL(/#\/report\/preview/);
+  // iframe should eventually appear
+  await expect(page.getByTestId('preview-iframe')).toBeVisible({ timeout: 15000 });
+});
 
-  const md = await downloadOnClick(page, 'export-md');
-  expect(md.suggestedFilename()).toMatch(/\.md$/);
+test('ReportPreviewPage: HTML としてダウンロードが発火する', async ({ freshPage: page }) => {
+  await page.goto('/#/report/preview');
+  await expect(page.getByTestId('preview-iframe')).toBeVisible({ timeout: 15000 });
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByTestId('preview-download-html').click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/\.html$/);
+});
 
-  const json = await downloadOnClick(page, 'export-json');
-  expect(json.suggestedFilename()).toMatch(/\.json$/);
+test('Settings: JSON エクスポートができる', async ({ freshPage: page }) => {
+  await page.getByRole('link', { name: '設定 / データ' }).click();
+  await expect(page).toHaveURL(/#\/settings/);
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: /JSON でバックアップ/ }).click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/\.json$/);
 });
 
 test('印刷ビューに切り替えても基本要素が表示される', async ({ freshPage: page }) => {
@@ -29,11 +57,3 @@ test('印刷ビューに切り替えても基本要素が表示される', async
   await page.emulateMedia({ media: 'print' });
   await expect(page.locator('header.app-header')).toBeHidden();
 });
-
-async function downloadOnClick(page: import('@playwright/test').Page, testId: string) {
-  const [download] = await Promise.all([
-    page.waitForEvent('download'),
-    page.getByTestId(testId).click(),
-  ]);
-  return download;
-}
