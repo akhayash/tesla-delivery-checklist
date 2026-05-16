@@ -1,7 +1,7 @@
 {
   "name": "tesla-delivery-checklist",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "Tesla 納車チェックリスト (Model Y L 対応) モバイル PWA",
   "scripts": {

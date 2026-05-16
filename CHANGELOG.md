@@ -4,6 +4,13 @@
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従い、
 CHANGELOG は [release-please](https://github.com/googleapis/release-please) により自動生成されます。
 
+## [1.2.1](https://github.com/akhayash/tesla-delivery-checklist/compare/v1.2.0...v1.2.1) (2026-05-16)
+
+
+### Bug Fixes
+
+* **data,ui:** TOP5 日本語と コミュニティ知見の補強 ([#19](https://github.com/akhayash/tesla-delivery-checklist/issues/19)) ([bb05162](https://github.com/akhayash/tesla-delivery-checklist/commit/bb05162bc3c8de8a176be6501bf11734db481331))
+
 ## [1.2.0](https://github.com/akhayash/tesla-delivery-checklist/compare/v1.1.0...v1.2.0) (2026-05-16)
 
 
