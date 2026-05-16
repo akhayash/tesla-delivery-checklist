@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 import {
   AlertTriangle,
-  Download,
   FileCode2,
-  FileText,
   Mail,
   Printer,
   Share2,
@@ -14,14 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Link } from 'react-router-dom';
 import { useProgress } from '@/store/progress';
 import { getTemplate } from '@/data/templates';
 import { buildReport, type BuiltReport } from '@/lib/report';
 import { generateHtmlReport } from '@/lib/reportHtml';
-import { generateMarkdownReport } from '@/lib/reportMarkdown';
-import { exportJson } from '@/lib/reportJson';
 import { buildMailto } from '@/lib/reportMailto';
-import { canShareFiles, downloadBlob, shareReport } from '@/lib/shareApi';
+import { canShareFiles, shareReport } from '@/lib/shareApi';
 import { getAppUrl } from '@/lib/appUrl';
 import { toast } from 'sonner';
 import { formatDate } from '@/lib/utils';
@@ -52,33 +49,6 @@ export default function SummaryPage() {
       active = false;
     };
   }, [template, snapshot]);
-
-  async function handleHtml() {
-    if (!report) return;
-    const html = await generateHtmlReport(report, { appUrl: getAppUrl() });
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const name = `tesla-delivery-report-${ts()}.html`;
-    downloadBlob(blob, name);
-    toast.success('HTML レポートをダウンロードしました');
-  }
-
-  async function handleMarkdown() {
-    if (!report) return;
-    const md = generateMarkdownReport(report);
-    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-    downloadBlob(blob, `tesla-delivery-report-${ts()}.md`);
-    toast.success('Markdown レポートをダウンロードしました');
-  }
-
-  async function handleJson() {
-    if (!report) return;
-    const j = await exportJson(snapshot, { includeMedia: true });
-    const blob = new Blob([JSON.stringify(j, null, 2)], {
-      type: 'application/json;charset=utf-8',
-    });
-    downloadBlob(blob, `tesla-delivery-backup-${ts()}.json`);
-    toast.success('JSON バックアップをダウンロードしました');
-  }
 
   async function handleMailto() {
     if (!report) return;
@@ -250,25 +220,23 @@ export default function SummaryPage() {
         <CardHeader>
           <CardTitle className="text-base">出力</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-2">
-          <Button onClick={handleHtml} disabled={busy} variant="accent" data-testid="export-html">
-            <FileCode2 className="h-4 w-4" /> HTML
+        <CardContent className="space-y-2">
+          <Button asChild variant="accent" className="w-full" data-testid="preview-btn">
+            <Link to="/report/preview">
+              <FileCode2 className="h-4 w-4" /> HTML レポートをプレビュー
+            </Link>
           </Button>
-          <Button onClick={handlePrint} disabled={busy} variant="outline" data-testid="export-print">
-            <Printer className="h-4 w-4" /> 印刷 / PDF
-          </Button>
-          <Button onClick={handleMarkdown} disabled={busy} variant="outline" data-testid="export-md">
-            <FileText className="h-4 w-4" /> Markdown
-          </Button>
-          <Button onClick={handleJson} disabled={busy} variant="outline" data-testid="export-json">
-            <Download className="h-4 w-4" /> JSON
-          </Button>
-          <Button onClick={handleMailto} disabled={busy} variant="outline" data-testid="export-mail">
-            <Mail className="h-4 w-4" /> メール
-          </Button>
-          <Button onClick={handleShare} disabled={busy} variant="outline" data-testid="export-share">
-            <Share2 className="h-4 w-4" /> 共有
-          </Button>
+          <div className="grid grid-cols-3 gap-2">
+            <Button onClick={handlePrint} disabled={busy} variant="outline" data-testid="export-print">
+              <Printer className="h-4 w-4" /> 印刷 / PDF
+            </Button>
+            <Button onClick={handleMailto} disabled={busy} variant="outline" data-testid="export-mail">
+              <Mail className="h-4 w-4" /> メール
+            </Button>
+            <Button onClick={handleShare} disabled={busy} variant="outline" data-testid="export-share">
+              <Share2 className="h-4 w-4" /> 共有
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

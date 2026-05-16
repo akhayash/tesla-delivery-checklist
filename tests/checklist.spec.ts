@@ -2,8 +2,9 @@ import { test, expect } from './fixtures';
 
 test.describe('チェックリスト基本操作', () => {
   test('ホーム → チェックリスト → 状態切替 → 永続化', async ({ freshPage: page }) => {
-    // Home shows the model card
+    // Home shows the model card (open accordion first)
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Tesla');
+    await page.getByTestId('vehicle-info-trigger').click();
     await expect(
       page.getByText('Tesla Model Y L (ロングホイールベース 6 人乗り)')
     ).toBeVisible();

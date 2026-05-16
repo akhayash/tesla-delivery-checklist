@@ -15,6 +15,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -83,39 +89,45 @@ export default function HomePage() {
       </section>
 
       <Card>
-        <CardHeader>
-          <CardTitle>選択中の車種</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-1">
-            <p className="font-display text-lg">{template.modelNameJa}</p>
-            <p className="text-xs text-muted-foreground">
-              テンプレート v{template.version}
-              {template.market && <> · {template.market}</>}
-            </p>
-          </div>
-          {template.specs && (
-            <dl className="grid grid-cols-2 gap-2 text-xs">
-              <Spec label="ホイールベース" value={`${template.specs.wheelbaseMm} mm`} />
-              <Spec label="全長×全幅×全高" value={`${template.specs.lengthMm} × ${template.specs.widthMm} × ${template.specs.heightMm} mm`} />
-              <Spec label="車重" value={`約 ${template.specs.curbWeightKg} kg`} />
-              <Spec label="乗車定員" value={`${template.specs.seats} 名`} />
-              <Spec label="駆動" value={template.specs.drivetrain ?? '—'} />
-            </dl>
-          )}
-          <div className="flex flex-wrap gap-2">
-            {templates.map((t) => (
-              <button
-                key={t.modelId}
-                onClick={() => switchModel(t.modelId)}
-                className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-accent hover:text-foreground data-[active=true]:border-accent data-[active=true]:text-accent"
-                data-active={t.modelId === modelId}
-              >
-                {t.modelName}
-              </button>
-            ))}
-          </div>
-        </CardContent>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="vehicle-info" className="border-b-0">
+            <AccordionTrigger className="px-6 py-4 text-sm font-medium" data-testid="vehicle-info-trigger">
+              車両情報
+            </AccordionTrigger>
+            <AccordionContent className="px-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <p className="font-display text-lg">{template.modelNameJa}</p>
+                  <p className="text-xs text-muted-foreground">
+                    テンプレート v{template.version}
+                    {template.market && <> · {template.market}</>}
+                  </p>
+                </div>
+                {template.specs && (
+                  <dl className="grid grid-cols-2 gap-2 text-xs">
+                    <Spec label="ホイールベース" value={`${template.specs.wheelbaseMm} mm`} />
+                    <Spec label="全長×全幅×全高" value={`${template.specs.lengthMm} × ${template.specs.widthMm} × ${template.specs.heightMm} mm`} />
+                    <Spec label="車重" value={`約 ${template.specs.curbWeightKg} kg`} />
+                    <Spec label="乗車定員" value={`${template.specs.seats} 名`} />
+                    <Spec label="駆動" value={template.specs.drivetrain ?? '—'} />
+                  </dl>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {templates.map((t) => (
+                    <button
+                      key={t.modelId}
+                      onClick={() => switchModel(t.modelId)}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-accent hover:text-foreground data-[active=true]:border-accent data-[active=true]:text-accent"
+                      data-active={t.modelId === modelId}
+                    >
+                      {t.modelName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </Card>
 
       <Card>
@@ -171,7 +183,7 @@ export default function HomePage() {
         )}
         <div className="grid grid-cols-3 gap-3">
           <Button asChild variant="outline">
-            <Link to="/summary">
+            <Link to="/report/preview">
               <FileBarChart2 className="h-4 w-4" /> レポート
             </Link>
           </Button>
@@ -211,7 +223,7 @@ export default function HomePage() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Tip icon={Camera} title="撮影は片手で" body="OS 純正カメラを起動。フラッシュ・Night Mode も普段通り。" />
         <Tip icon={ShieldCheck} title="完全ローカル保存" body="写真・動画・メモは端末にのみ。リポジトリへは送信しません。" />
-        <Tip icon={FileBarChart2} title="共有しやすく" body="自己完結 HTML / PDF / Markdown でレポート化。" />
+        <Tip icon={FileBarChart2} title="共有しやすく" body="自己完結 HTML / PDF / メールでレポート化。" />
       </div>
 
       <p className="text-[11px] text-muted-foreground">
