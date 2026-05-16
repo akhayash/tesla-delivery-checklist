@@ -9,12 +9,14 @@ import type {
 } from '@/data/schema';
 import { defaultModelId, getTemplate } from '@/data/templates';
 
-const CURRENT_TEMPLATE_VERSION = '0.2.0';
+const CURRENT_TEMPLATE_VERSION = '0.3.0';
 
 interface ProgressState {
   snapshot: ChecklistSnapshot;
   severityFilter: SeverityFilter;
   migrationWarning: string | null;
+  /** The id of the last item that was checked (ok / issue / na). Persisted to localStorage. */
+  lastCheckedItemId: string | null;
   setStatus: (itemId: string, status: ItemStatus) => void;
   setSeverityFilter: (filter: SeverityFilter) => void;
   setNote: (itemId: string, note: string) => void;
@@ -27,6 +29,8 @@ interface ProgressState {
   reset: () => void;
   importSnapshot: (snap: ChecklistSnapshot) => void;
   dismissMigrationWarning: () => void;
+  /** Manually override the last-checked pointer (used by scroll-restore logic). */
+  setLastCheckedItemId: (id: string | null) => void;
 }
 
 function initialSnapshot(modelId: string = defaultModelId): ChecklistSnapshot {
@@ -117,8 +121,13 @@ export const useProgress = create<ProgressState>()(
       snapshot: initialSnapshot(),
       severityFilter: 'all',
       migrationWarning: null,
+      lastCheckedItemId: null,
       setStatus: (itemId, status) =>
-        set((s) => ({ snapshot: upsertItem(s.snapshot, itemId, { status }) })),
+        set((s) => ({
+          snapshot: upsertItem(s.snapshot, itemId, { status }),
+          // Track last actively-checked item (not "unchecked" resets)
+          lastCheckedItemId: status !== 'unchecked' ? itemId : s.lastCheckedItemId,
+        })),
       setSeverityFilter: (severityFilter) => set({ severityFilter }),
       setNote: (itemId, note) =>
         set((s) => ({ snapshot: upsertItem(s.snapshot, itemId, { note }) })),
@@ -153,11 +162,13 @@ export const useProgress = create<ProgressState>()(
         set({
           snapshot: initialSnapshot(modelId),
           migrationWarning: null,
+          lastCheckedItemId: null,
         }),
       reset: () =>
         set((s) => ({
           snapshot: initialSnapshot(s.snapshot.meta.modelId),
           migrationWarning: null,
+          lastCheckedItemId: null,
         })),
       importSnapshot: (snap) => {
         const normalized = normalizeSnapshot(snap);
@@ -167,6 +178,7 @@ export const useProgress = create<ProgressState>()(
         });
       },
       dismissMigrationWarning: () => set({ migrationWarning: null }),
+      setLastCheckedItemId: (id) => set({ lastCheckedItemId: id }),
     }),
     {
       name: 'tesla-delivery-progress',
@@ -175,6 +187,7 @@ export const useProgress = create<ProgressState>()(
       partialize: (state) => ({
         snapshot: state.snapshot,
         severityFilter: state.severityFilter,
+        lastCheckedItemId: state.lastCheckedItemId,
       }),
       merge: (persistedState, currentState) => {
         const persisted = persistedState as Partial<ProgressState> | undefined;
@@ -189,6 +202,7 @@ export const useProgress = create<ProgressState>()(
             ? persisted.severityFilter
             : currentState.severityFilter,
           migrationWarning: normalized.warning,
+          lastCheckedItemId: persisted?.lastCheckedItemId ?? currentState.lastCheckedItemId,
         };
       },
     }

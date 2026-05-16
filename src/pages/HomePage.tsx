@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -9,6 +9,7 @@ import {
   QrCode as QrIcon,
   Copy,
   Check,
+  PlayCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,12 +32,30 @@ import { toast } from 'sonner';
 export default function HomePage() {
   const modelId = useProgress((s) => s.snapshot.meta.modelId);
   const severityFilter = useProgress((s) => s.severityFilter);
+  const snapshot = useProgress((s) => s.snapshot);
+  const lastCheckedItemId = useProgress((s) => s.lastCheckedItemId);
   const template = getTemplate(modelId);
   const templates = listTemplates();
   const switchModel = useProgress((s) => s.switchModel);
   const setSeverityFilter = useProgress((s) => s.setSeverityFilter);
   const [copied, setCopied] = useState(false);
   const appUrl = getAppUrl();
+
+  // Calculate overall progress for resume CTA
+  const { totalItems, checkedItems } = useMemo(() => {
+    let total = 0;
+    let checked = 0;
+    for (const cat of template.categories) {
+      for (const item of cat.items) {
+        total++;
+        const st = snapshot.states[item.id]?.status;
+        if (st && st !== 'unchecked') checked++;
+      }
+    }
+    return { totalItems: total, checkedItems: checked };
+  }, [snapshot, template]);
+
+  const hasProgress = checkedItems > 0 && lastCheckedItemId;
 
   async function copyLink() {
     try {
@@ -128,11 +147,28 @@ export default function HomePage() {
       </Card>
 
       <div className="grid grid-cols-1 gap-3">
-        <Button asChild size="lg" variant="accent" className="h-14 text-base">
-          <Link to="/checklist">
-            <ClipboardCheck className="h-5 w-5" /> チェックを開始 <ArrowRight className="h-5 w-5" />
-          </Link>
-        </Button>
+        {hasProgress ? (
+          <>
+            <Button asChild size="lg" variant="accent" className="h-14 text-base" data-testid="resume-cta">
+              <Link to="/checklist">
+                <PlayCircle className="h-5 w-5" />
+                前回の続きから ({checkedItems} 件目 / 残り {totalItems - checkedItems} 件)
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="text-xs text-muted-foreground">
+              <Link to="/checklist">
+                <ClipboardCheck className="h-4 w-4" /> 最初から確認
+              </Link>
+            </Button>
+          </>
+        ) : (
+          <Button asChild size="lg" variant="accent" className="h-14 text-base">
+            <Link to="/checklist">
+              <ClipboardCheck className="h-5 w-5" /> チェックを開始 <ArrowRight className="h-5 w-5" />
+            </Link>
+          </Button>
+        )}
         <div className="grid grid-cols-3 gap-3">
           <Button asChild variant="outline">
             <Link to="/summary">
