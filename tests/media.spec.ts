@@ -62,5 +62,11 @@ test('問題項目に写真を添付・削除できる', async ({ freshPage: pag
   });
 
   await itemAfter.getByRole('button', { name: '削除' }).click();
+  await expect(page.getByRole('alertdialog')).toContainText('削除すると元に戻せません');
+  await page.getByRole('button', { name: 'キャンセル' }).click();
+  await expect(itemAfter.getByTestId('media-grid').locator('img')).toHaveCount(1);
+
+  await itemAfter.getByRole('button', { name: '削除' }).click();
+  await page.getByRole('button', { name: '削除する' }).click();
   await expect(itemAfter.getByTestId('media-grid')).toHaveCount(0);
 });

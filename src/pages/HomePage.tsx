@@ -48,20 +48,23 @@ export default function HomePage() {
   const appUrl = getAppUrl();
 
   // Calculate overall progress for resume CTA
-  const { totalItems, checkedItems } = useMemo(() => {
+  const { totalItems, checkedItems, issueItems } = useMemo(() => {
     let total = 0;
     let checked = 0;
+    let issues = 0;
     for (const cat of template.categories) {
       for (const item of cat.items) {
         total++;
         const st = snapshot.states[item.id]?.status;
         if (st && st !== 'unchecked') checked++;
+        if (st === 'issue') issues++;
       }
     }
-    return { totalItems: total, checkedItems: checked };
+    return { totalItems: total, checkedItems: checked, issueItems: issues };
   }, [snapshot, template]);
 
-  const hasProgress = checkedItems > 0 && lastCheckedItemId;
+  const isComplete = totalItems > 0 && checkedItems === totalItems;
+  const hasProgress = !isComplete && checkedItems > 0 && lastCheckedItemId;
 
   async function copyLink() {
     try {
@@ -75,16 +78,15 @@ export default function HomePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <section>
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Inspection App</p>
-        <h1 className="mt-2 text-3xl font-display font-light leading-tight">
+        <h1 className="mt-2 text-2xl font-display font-light leading-tight">
           Tesla 納車を、<br />落ち着いて確認しましょう。
         </h1>
         <div className="mt-3 h-[3px] w-14 bg-accent" />
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-          車種ごとのチェックリストに沿って、外装・内装・機能・書類を 1 つずつ確認。
-          問題があった項目は写真・動画・メモを添付し、その場で共有用のレポートを生成します。
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          車種ごとのチェックリストで外装・内装・機能・書類を順番に確認し、問題があれば写真・動画・メモ付きでレポート化できます。
         </p>
       </section>
 
@@ -159,7 +161,17 @@ export default function HomePage() {
       </Card>
 
       <div className="grid grid-cols-1 gap-3">
-        {hasProgress ? (
+        {isComplete ? (
+          <Button asChild size="lg" variant="accent" className="h-14 text-base" data-testid="complete-cta">
+            <Link to="/summary">
+              <ClipboardCheck className="h-5 w-5" />
+              {issueItems > 0
+                ? 'レポートを確認する'
+                : '🎉 完璧です！レポートを出力する'}
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </Button>
+        ) : hasProgress ? (
           <>
             <Button asChild size="lg" variant="accent" className="h-14 text-base" data-testid="resume-cta">
               <Link to="/checklist">

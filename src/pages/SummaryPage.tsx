@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 import {
   AlertTriangle,
+  CheckCircle2,
   FileCode2,
   Mail,
   Printer,
@@ -101,6 +102,15 @@ export default function SummaryPage() {
           現在の状態を集計して、共有・印刷用のレポートを生成します。
         </p>
       </div>
+
+      {totals && totals.unchecked === 0 && (
+        <div className="rounded-lg border border-success/40 bg-success/5 px-4 py-3 animate-in fade-in-0 duration-500">
+          <div className="flex items-center gap-2 text-sm text-success-foreground">
+            <CheckCircle2 className="h-5 w-5 text-success" />
+            <span>全項目のチェックが完了しました。</span>
+          </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>

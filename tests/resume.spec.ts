@@ -46,4 +46,23 @@ test.describe('クラッシュ復帰 UX', () => {
     await page.reload();
     await expect(page.getByTestId('item-doc.vin-match')).toHaveAttribute('data-status', 'ok');
   });
+
+  test('全件完了かつ問題ありのときホーム CTA は「レポートを確認する」', async ({ freshPage: page }) => {
+    await page.getByRole('link', { name: /チェックを開始/ }).click();
+    await page.getByTestId('bulk-issue').click();
+    await page.getByTestId('bulk-confirm').click();
+
+    await page.goto('');
+    await expect(page.getByTestId('complete-cta')).toBeVisible();
+    await expect(page.getByTestId('complete-cta')).toContainText('レポートを確認する');
+  });
+
+  test('全件完了かつ問題なしのときホーム CTA は完了メッセージ', async ({ freshPage: page }) => {
+    await page.getByRole('link', { name: /チェックを開始/ }).click();
+    await page.getByTestId('bulk-ok').click();
+
+    await page.goto('');
+    await expect(page.getByTestId('complete-cta')).toBeVisible();
+    await expect(page.getByTestId('complete-cta')).toContainText('🎉 完璧です！レポートを出力する');
+  });
 });
