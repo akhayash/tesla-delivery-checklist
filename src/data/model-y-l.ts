@@ -129,7 +129,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.bumpers',
           title: 'バンパー (フロント / リア) の取付・浮き',
           description:
-            'Y L はリアバンパー周りが長く、フィッターずれが起きやすいので要確認。',
+            'ドアシャットラインを基準に、リアバンパー上端とクォーターパネルの段差・左右隙間差を確認。段差 3 mm 以上、左右差 2 mm 超は要修正の目安。TMC/Reddit で納車直後のずれ報告が多く、必ずその場で写真を撮って Due Bill に記載。',
           severity: 'major',
         },
         {
@@ -164,7 +164,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.wheels',
           title: 'ホイール 4 本：縁石傷・センターキャップ',
           description:
-            '4 本のホイール全周を確認。縁石傷の有無、センターキャップとロゴの向き (Tesla T マークが 12 時位置で揃っているか) を確認。',
+            '4 本のホイール全周を確認し、縁石傷の有無を撮影。センターキャップの Tesla T ロゴは 12 時位置に揃えると見栄えが整う。ロゴ向きはキャップを手で軽く回して調整可能（機能影響なし）なので、納車時にまとめて合わせ、基準写真を残しておく。',
           severity: 'minor',
         },
         {
@@ -227,7 +227,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.paint',
           title: '左右サイドの塗装：傷・色ムラ・ピンホール',
           description:
-            '太陽光または LED 直下で全パネルを 45° の角度で目視。orange peel (梨地) は爪で引っかかるレベルなら修理対象。Pearl White は汚れや擦り傷が目立ちやすく、Cosmic Silver や暗色は orange peel 自体が目立ちやすい。',
+            '太陽光または強い LED を斜め 45° から当て、orange peel に加えて dust nibs（ブツ）、sanding marks（研磨跡）、paint runs（垂れ）を面ごとに確認。TMC/Reddit で頻出。指先で凹凸を感じたら写真・動画を撮り、受領前に Due Bill へ記載。',
           severity: 'major',
         },
         {
@@ -285,7 +285,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'int.steering',
           title: '運転席：ステアリング・スクロール・センター位置',
           description:
-            '直進時にセンターからずれていないか。スクロールホイール・ヒーターの動作も確認。ホーン・ウインカー等の機能テストは step-7 で実施。',
+            '平坦路を直進し、ステアリングのスポークが水平（目安ずれ ±5° 以内）か確認。片流れやセンターずれは調整対象。加えて Service 画面でステアリング関連リコール/未実施キャンペーン表示がないか確認し、該当時は受領前に Due Bill へ記録。',
           severity: 'major',
         },
         {
@@ -329,7 +329,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'yl.row2-power',
           title: '2 列目シート：ヒーター・ベンチレーション・電動リクライニング',
           description:
-            '2 列目はキャプテンシート 2 脚で、ヒーター・ベンチレーション・電動リクライニング・電動アームレストを装備。前後スライドは手動の可能性が高い。各機能が独立に動作するかを左右両席で確認。',
+            '前席画面で Climate ▸ Rear を開き、Rear Climate を ON。左席温度→右席温度→風量の順に変更し、左右席へ独立反映されるか確認。ヒーター/ベンチレーション/電動リクライニングも左右別に作動確認。国内オーナーブログで操作迷い報告あり。',
           severity: 'major',
         },
         {
@@ -424,14 +424,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'int.audio',
           title: 'オーディオ：全スピーカーの音抜けチェック',
           description:
-            'バランス／フェーダーをまわして 1 スピーカーずつ音が出るか。',
+            'Audio ▸ Settings ▸ Balance/Fade でフォーカスを四隅へ動かし、各スピーカーを単独確認。試聴は低音（例: Billie Eilish「bad guy」）と高音（例: 宇多田ヒカル「First Love」）の 2 曲を使うと音抜けや歪みを判別しやすい。',
           severity: 'minor',
         },
         {
           id: 'int.odor',
           title: '内装の異臭・タバコ臭・接着剤臭',
           description:
-            '車内に乗り込んで強い接着剤臭・塗料臭・タバコ臭がないか確認。工場出荷直後は多少の揮発臭があるが、刺激臭が強い場合は要確認。',
+            '接着剤・新車カーペット・エアコン内部カビ由来の臭いを切り分けるため、全ドア開放で 10 分換気後に再確認。刺激臭が残る、または送風で酸っぱい臭いが出る場合はエアコン洗浄をその場で依頼。Reddit/TMC で納車初期報告が多く、必ず写真とメモを残す。',
           severity: 'major',
         },
         {
@@ -452,7 +452,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'int.trunk',
           title: 'ラゲッジ：トノカバー・12V/USB-C・サブトランク',
           description:
-            '3 列目を畳んだ後の床の段差、サブトランクのカーペット固定。',
+            '3 列目格納後の床段差に加え、サブトランク底面の湿り・水滴跡・カビ臭、排水穴まわりの詰まりを確認。TMC で納車直後の浸水報告多数。濡れを見つけたら拭き取り前に写真・動画を撮り、受領前に Due Bill へ必ず記載し、再発防止処置を依頼。',
           severity: 'major',
         },
       ],
@@ -482,7 +482,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.hvac',
           title: 'HVAC：冷房・暖房・HEPA・除湿',
           description:
-            '冷えと暖まりの速さ、ファン段階、Bioweapon Defense Mode (装備時) の起動。',
+            '冷房/暖房の切替と除湿に加え、Bioweapon Defense Mode の表示・起動可否を確認。グローブボックス奥の HEPA/キャビンフィルターカバーを開け、フィルターが実装済みか目視。未装着や異臭は受領前に是正依頼し、写真付きで記録する。',
           severity: 'major',
         },
         {
@@ -503,7 +503,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.wipers',
           title: 'ワイパー：間欠・連続・ウォッシャー噴霧',
           description:
-            'ウォッシャー液の出方、左右ノズルの噴射位置、自動ワイパーの反応。',
+            '間欠/連続/自動の反応に加え、ウォッシャー液残量警告が出ていないか確認。寒冷地納車なら凍結防止タイプ（氷点下 -20 ℃ 目安）か担当へ確認し補充依頼。左右ノズルの噴射ずれや拭き残しは TMC/Reddit でも頻出で、動画を撮ってその場で申告し納車記録に残す。',
           severity: 'major',
         },
         {
@@ -517,7 +517,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.seatbelts',
           title: '全席シートベルト：着脱・警告表示',
           description:
-            '全 6 席（前列・2 列目・3 列目）のベルト着脱・警告・テンショナーを確認。バックル挿入・解除、巻取り、着座検知と警告表示／警告音も合わせて確認。',
+            '全 6 席でバックル着脱、警告表示、リトラクター巻取りを確認（急引きでロックするか）。2 列目左右の ISO-FIX 位置とトップテザー固定点を実見し、チャイルドシート適合を確認。不良は安全項目のため受領前に必ず是正依頼し、対応内容を記録。',
           severity: 'critical',
         },
         {
@@ -552,14 +552,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.autopilot-cal',
           title: 'Autopilot キャリブレーションの進み具合を確認',
           description:
-            '車両カメラのキャリブレーションには通常 20〜100 km の走行が必要。Controls ▸ Autopilot に進捗バーが表示される。納車時点では未完で構わない。',
+            '車両カメラのキャリブレーションは通常 20〜100 km 必要。未完了中は Autopilot、Navigate on Autopilot、Autopark が制限/無効になる。Controls ▸ Autopilot の進捗バーを確認し、100 km 超で未完なら点検相談。',
           severity: 'minor',
         },
         {
           id: 'fn.voice-nav',
           title: 'ナビ／音声認識：目的地設定',
           description:
-            '住所や施設名を話して認識できるか、候補選択からナビ開始まで操作できるか。',
+            '音声ボタンで「東京駅へ案内」「最寄りの Supercharger」「つくば市役所」を試し、候補表示から案内開始まで確認。Controls ▸ Display で日本語/英語切替後も認識できるか確認すると、初期設定漏れを見つけやすく、国内ブログでも有効とされる。',
           severity: 'minor',
         },
         {
@@ -603,7 +603,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.supercharger',
           title: 'スーパーチャージャー試し充電 (最大 250 kW)',
           description:
-            'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。V4 (500 kW キャビネット) は 2025 年から段階展開中。コネクタを接続してから 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
+            '可能なら SOC 10〜30% で接続し、200 kW 以上まで立ち上がるか確認。目安は 50% 付近で約 150 kW、80% 付近で 50 kW 以下へ低下。接続後 60 秒以内に充電開始しない、出力が大きく外れる場合はその場で記録して申告。',
           severity: 'major',
         },
         {
@@ -661,7 +661,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'sw.connectivity',
           title: 'Premium Connectivity / 標準コネクティビティ',
           description:
-            '契約状況を確認し、ストリーミングや衛星マップが使えるか。',
+            'Premium Connectivity は通常 30 日試用で、終了後は自動課金されず手動加入。試用中は衛星マップ・車内動画ストリーミング・強化ライブトラフィックが利用可能。Standard で使える機能との差分（地図表示/音楽機能など）も納車時に確認しておく。',
           severity: 'minor',
         },
       ],
