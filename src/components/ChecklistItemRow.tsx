@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AlertTriangle, CheckCircle2, Circle, MinusCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, MinusCircle } from 'lucide-react';
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -58,8 +58,10 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
       <div className="mt-3">
         <ToggleGroup
           type="single"
-          value={status}
-          onValueChange={(v) => v && setStatus(item.id, v as ItemStatus)}
+          value={status === 'unchecked' ? '' : status}
+          onValueChange={(v) =>
+            setStatus(item.id, ((v as ItemStatus) || 'unchecked') as ItemStatus)
+          }
           className="w-full"
           variant="outline"
         >
@@ -84,14 +86,12 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
           >
             <MinusCircle className="h-4 w-4" /> 対象外
           </ToggleGroupItem>
-          <ToggleGroupItem
-            value="unchecked"
-            className="flex-1"
-            aria-label="未チェック"
-          >
-            <Circle className="h-4 w-4" /> 未チェック
-          </ToggleGroupItem>
         </ToggleGroup>
+        {status !== 'unchecked' && (
+          <p className="mt-1.5 text-[10px] text-muted-foreground">
+            選択中のボタンをもう一度タップすると未チェックに戻ります
+          </p>
+        )}
       </div>
 
       {(status === 'issue' || note || mediaIds.length > 0) && (

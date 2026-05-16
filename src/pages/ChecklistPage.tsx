@@ -30,7 +30,6 @@ type ConfirmAction = 'issue' | 'clear' | null;
 export default function ChecklistPage() {
   const snapshot = useProgress((s) => s.snapshot);
   const severityFilter = useProgress((s) => s.severityFilter);
-  const setSeverityFilter = useProgress((s) => s.setSeverityFilter);
   const bulkSetStatus = useProgress((s) => s.bulkSetStatus);
   const bulkClearStatus = useProgress((s) => s.bulkClearStatus);
   const importSnapshot = useProgress((s) => s.importSnapshot);
@@ -157,39 +156,6 @@ export default function ChecklistPage() {
           </span>
         </div>
       )}
-
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <p className="text-sm font-medium">重要度フィルタ</p>
-            <p className="text-xs text-muted-foreground">
-              {severityFilterMeta[severityFilter].label} ·{' '}
-              {severityFilterMeta[severityFilter].description}
-            </p>
-          </div>
-          <Badge variant="outline" className="tabular">
-            表示中 {visibleItemIds.length} 件
-          </Badge>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {(['critical', 'standard', 'all'] as const).map((mode) => (
-            <Button
-              key={mode}
-              type="button"
-              variant={severityFilter === mode ? 'accent' : 'outline'}
-              size="sm"
-              className="justify-between"
-              onClick={() => setSeverityFilter(mode)}
-              data-testid={`checklist-filter-${mode}`}
-            >
-              <span>{severityFilterMeta[mode].label}</span>
-              <span className="text-[11px] opacity-80">
-                {severityFilterMeta[mode].description}
-              </span>
-            </Button>
-          ))}
-        </div>
-      </section>
 
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">

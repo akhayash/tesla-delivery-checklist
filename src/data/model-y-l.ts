@@ -30,7 +30,7 @@ export const modelYLTemplate: ChecklistTemplate = {
   specs: {
     wheelbaseMm: 3040,
     lengthMm: 4976,
-    widthMm: 1982,
+    widthMm: 1920,
     heightMm: 1668,
     curbWeightKg: 2088,
     seats: 6,
@@ -39,6 +39,7 @@ export const modelYLTemplate: ChecklistTemplate = {
       '標準 Model Y からホイールベースを 150 mm 延長',
       '2 列目はキャプテンシート × 2、3 列目を備える 2-2-2 配置',
       '車重は標準 Model Y より約 90 kg 重い',
+      '車体幅 1,920 mm (ミラー折畳時 1,982 mm / ミラー展開時 2,129 mm)',
     ],
   },
   categories: [
@@ -53,7 +54,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.vin-match',
           title: 'VIN が注文書 / Tesla アプリ / 車体表示と一致',
           description:
-            'フロントガラス左下や運転席ドア開口部の VIN と、Tesla アプリ・契約書の VIN が完全一致することを確認。',
+            'フロントガラス左下、運転席ドア開口部 (B ピラー)、フランク内ラベル、車載スクリーンの Controls ▸ Software ▸ 車両情報、Tesla アプリ、注文書のすべての VIN が完全一致することを確認。',
           severity: 'critical',
         },
         {
@@ -72,9 +73,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'doc.warranty',
-          title: '保証内容 (新車 / バッテリー) を確認',
+          title: '保証内容 (新車 / バッテリー) と三包凭证',
           description:
-            '電子保証の場合は Tesla アカウント上で確認可能か。',
+            '中国仕様の基本保証は 4 年 / 8 万 km、駆動系・バッテリーは 8 年 / 19.2 万 km (容量保証 70%)。Tesla アカウントで電子確認できるか、加えて中国法定の物理三包凭证 (修理・交換・返品証明書) が同梱されているかも確認。',
           severity: 'major',
         },
         {
@@ -109,10 +110,10 @@ export const modelYLTemplate: ChecklistTemplate = {
     },
     {
       id: 'step-2-walkaround',
-      title: '2. 外装ウォークアラウンド (フロント → 右サイド → リア → 左サイド)',
+      title: '2. 外装ウォークアラウンド (フロント ▸ 右サイド ▸ リア ▸ 左サイド)',
       icon: 'Car',
       locationHint:
-        '車の前に立ってから時計回りに一周。フロント → 右サイド → リア → 左サイドの順で見ると見落としにくいです。',
+        '車の前に立ってから時計回りに一周。フロント ▸ 右サイド ▸ リア ▸ 左サイドの順で見ると見落としにくいです。',
       items: [
         {
           id: 'ext.lights',
@@ -132,7 +133,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.windshield',
           title: 'フロント / リアガラス：チップ・線傷',
           description:
-            '輸送中のフライングストーンによるチップに注意。',
+            '輸送中のフライングストーンによるチップに注意。Juniper 以降は全窓に二層遮音ガラス (acoustic) を採用。工場ダッシュカムは無く、Sentry Mode が車載 8 カメラで録画を担当する。',
           severity: 'major',
         },
         {
@@ -160,14 +161,21 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.wheels',
           title: 'ホイール 4 本：縁石傷・センターキャップ',
           description:
-            '4 本のホイール全周。センターキャップとロゴの向きが揃っているか。',
+            '4 本のホイール全周を確認。縁石傷の有無、センターキャップとロゴの向き (Tesla T マークが 12 時位置で揃っているか) を確認。',
           severity: 'minor',
         },
         {
-          id: 'ext.tires',
-          title: 'タイヤ 4 本：銘柄・サイズ・製造週・空気圧',
+          id: 'ext.wheel-covers',
+          title: 'エアロホイールカバー 4 本：完全に嵌まっている',
           description:
-            '4 本同銘柄、サイドウォールの DOT 製造週コード、規定空気圧を確認。',
+            '19 インチホイールはエアロカバー装着。納車後の走行で外れて紛失する事例あり (オーナー報告)。各カバーの全周クリップが浮きなく完全に嵌まっているか、押し込んでカチッと固定されているかを 4 本すべて確認。',
+          severity: 'major',
+        },
+        {
+          id: 'ext.tires',
+          title: 'タイヤ：スタッガード仕様 (前 255/45R19・後 275/45R19)',
+          description:
+            'Model Y L は前後で異なる幅のスタッガード仕様。前 255/45R19 / 後 275/45R19 が正しい配置か、左右で銘柄が同一か、サイドウォールの DOT 製造週コードが納車日から 26 週以内かを確認。前後ローテーション不可。',
           severity: 'major',
         },
         {
@@ -181,7 +189,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.panel-gaps',
           title: '左右サイドのパネルギャップが大きくずれていない',
           description:
-            'ボンネット・ドア・フェンダー・リアハッチの隙間を上下左右で比較。',
+            'ボンネット・ドア・フェンダー・リアハッチの隙間を上下左右で比較。Tesla 公式の数値基準は非公開。コミュニティ目安は同一パネル内で 1 mm 以上の差が要対応、2 mm 以上は明確な欠陥。名刺 (約 0.8 mm) をゲージにすると判定しやすい。',
           severity: 'major',
         },
         {
@@ -200,16 +208,16 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'ext.frame-alignment',
-          title: 'フレーム・ピラー整合 (対角線チェック)',
+          title: 'フレーム・ピラー整合 (対角線チェック・オーナー実施)',
           description:
-            'ドア開口部の対角線 (左上と右下、右上と左下) をメジャーで計測し、差が 5 mm 以内であることを確認。大きなずれはフレーム歪みの可能性があり最重要欠陥。',
+            'ドア開口部の対角線 (左上⇄右下、右上⇄左下) をメジャーで計測し、差が 5 mm 以内か確認。大きなずれはフレーム歪みの可能性あり最重要欠陥。Tesla 納車プロセスにはこの確認は含まれないため、オーナー自身か第三者の验车师 (検車サービス) が実施する。',
           severity: 'critical',
         },
         {
           id: 'ext.paint',
           title: '左右サイドの塗装：傷・色ムラ・ピンホール',
           description:
-            '太陽光または LED 直下で全パネルを目視。スマホのフラッシュを使うと微細欠陥を見つけやすい。',
+            '太陽光または LED 直下で全パネルを 45° 角度で目視。orange peel (梨地) は爪で引っかかるレベルなら service eligible。Pearl White は汚れや擦り傷が目立ちやすく、Cosmic Silver や暗色は orange peel そのものが目立ちやすい。',
           severity: 'major',
         },
         {
@@ -254,7 +262,7 @@ export const modelYLTemplate: ChecklistTemplate = {
       title: '3. 乗り込み前 (室内ぐるり)',
       icon: 'Armchair',
       locationHint:
-        'まず前席まわりを一周。運転席 → 助手席の順で座り心地と操作系を確認。',
+        'まず前席まわりを一周。運転席 ▸ 助手席の順で座り心地と操作系を確認。',
       items: [
         {
           id: 'int.front-seats',
@@ -279,9 +287,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'int.screen',
-          title: '15.4 インチ中央スクリーン：傷・反応・コーティング',
+          title: '16 インチ中央スクリーン：傷・反応・コーティング',
           description:
-            '画面の角・縁の傷、タッチ反応、コーティングの剥がれ。',
+            'Model Y L は 16 インチ中央タッチスクリーン (Juniper 以前の 15.4 インチから拡大)。画面の角・縁の傷、タッチ反応、コーティングの剥がれ。Apps ▸ Toybox ▸ Sketchpad で黒一面を 1 分表示すればドット欠け・バックライト漏れの検出に有効。',
           severity: 'major',
         },
         {
@@ -295,7 +303,7 @@ export const modelYLTemplate: ChecklistTemplate = {
     },
     {
       id: 'step-4-row2',
-      title: '4. 2 列目 (左キャプテン → 右キャプテン)',
+      title: '4. 2 列目 (左キャプテン ▸ 右キャプテン)',
       icon: 'Users',
       locationHint:
         '左キャプテンシートから順番に座り、スライド・リクライニング・快適装備を左右で比較。',
@@ -309,9 +317,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'yl.row2-power',
-          title: '2 列目シート：ヒーター・ベンチレーション・前倒し動作',
+          title: '2 列目シート：ヒーター・ベンチレーション・電動リクライニング',
           description:
-            '装備グレードに応じて確認。電動なら前倒し動作のスムーズさも見る。',
+            '2 列目はキャプテンシート 2 脚で、ヒーター・ベンチレーション・電動リクライニング・電動アームレストを装備。前後スライドは手動の可能性が高い。各機能が独立に動作するかを左右両席で確認。',
           severity: 'major',
         },
         {
@@ -323,11 +331,10 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'yl.rear-entertainment',
-          title: '後席エンタメスクリーン (装備グレードのみ)',
+          title: '8 インチ後席タッチスクリーン (標準装備)',
           description:
-            '後席センターコンソール上のタッチスクリーン (装備グレード) でビデオ再生・音量調整・エアコン操作ができるか確認。グレードにより未装備の場合は該当なし (対象外) でチェック。',
+            '2 列目センターコンソール上の 8 インチタッチスクリーンが標準装備。ビデオ再生・音量・後席エアコン操作ができるか確認。',
           severity: 'minor',
-          applicableTo: ['Performance'],
         },
         {
           id: 'yl.usb',
@@ -363,7 +370,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'yl.row3-seats',
           title: '3 列目シート：背もたれ角度・ヘッドルーム・固定',
           description:
-            '大人が短時間座れるか、固定やガタつきも確認。',
+            '大人 (身長 170 cm 前後) が短時間座れるか、頭部とリアガラスの距離は約 10〜15 cm (拳一つ強) になる設計のため段差走行時の頭部接触リスクに注意。シート固定の堅牢性も合わせて確認。',
           severity: 'major',
         },
         {
@@ -493,7 +500,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.signals',
           title: 'ターンシグナル / ハザード',
           description:
-            '左右ウインカー、ハザード、ステアリングボタン操作。',
+            'Model Y L は左ストーク (タップで車線変更 3 回点滅、長押しで通常ウインカー) でウインカー操作。ハザードはステアリング上方ダッシュ中央の物理ボタン (赤三角)。両方を点灯確認。',
           severity: 'major',
         },
         {
@@ -505,9 +512,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'fn.cameras',
-          title: 'カメラ：8 方位映像の歪み / 汚れ',
+          title: 'カメラ：全方位映像の歪み / 汚れ (HW4 / 9 カメラ)',
           description:
-            '全カメラ画像をスクリーンで確認し、汚れや内部結露がないか。',
+            'Model Y L は Hardware 4 (AI4) を搭載し物理カメラは 9 個 (スクリーン上は 8 方位表示)。Camera ビューで全角度の鮮明度を確認。B ピラーのリピーターカメラ内部結露は既知欠陥なので特に注意。',
           severity: 'major',
         },
         {
@@ -521,7 +528,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.autopilot-cal',
           title: 'Autopilot キャリブレーションの進み具合を確認',
           description:
-            '納車後、安全な道で数 km の走行が必要。納車時点では未完でも OK。',
+            '車両カメラのキャリブレーションには通常 20〜100 km の走行が必要。Controls ▸ Autopilot に進捗バーが表示される。納車時点では未完で構わない。',
           severity: 'minor',
         },
         {
@@ -535,7 +542,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.sentry-dogmode',
           title: 'Sentry Mode / Dog Mode / Camp Mode',
           description:
-            'すべて起動できるか、カメラ映像が正常に保存されるか。',
+            'すべて起動できるか、カメラ映像が正常に保存されるかを確認。中国では政府施設や軍事エリア付近で Sentry Mode が自動無効化される場合がある (中国サイバーセキュリティ法対応)。',
           severity: 'minor',
         },
       ],
@@ -556,9 +563,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'fn.supercharger',
-          title: 'スーパーチャージャー試し充電',
+          title: 'スーパーチャージャー試し充電 (GB/T・最大 250 kW)',
           description:
-            '充電開始、最大電流、充電カーブ、車載画面の表示確認。',
+            'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。中国では V3 が主流、V4 (500 kW キャビネット) は 2025 年 6 月から段階展開中。GB/T DC コネクタで開始 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
           severity: 'major',
         },
         {
@@ -595,21 +602,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'sw.fw-version',
           title: 'ソフトウェアバージョンを記録',
           description:
-            '「サービス → ソフトウェア」から控える。',
+            '「サービス ▸ ソフトウェア」から控える。',
           severity: 'minor',
-        },
-        {
-          id: 'sw.fsd-eap',
-          title: 'FSD / EAP オプションの有効化状況',
-          description:
-            '購入オプションが反映されているか確認。',
-          severity: 'major',
         },
         {
           id: 'sw.locale',
           title: '言語 / 地域 / 単位設定',
           description:
-            '日本語 UI、距離 km、時刻 24h など。',
+            'Model Y L (中国仕様) は中国語と英語の UI のみ。日本語 UI は非対応 (グレー輸入車であっても OTA で切替不可)。距離 km・時刻 24h など基本設定を確認。',
           severity: 'minor',
         },
         {

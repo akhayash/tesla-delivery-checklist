@@ -2,11 +2,13 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { BottomNav } from './BottomNav';
 import { ProgressHeader } from './ProgressHeader';
+import { SeverityFilterChips } from './SeverityFilterChips';
 import { useProgress } from '@/store/progress';
 
 export function AppShell() {
   const loc = useLocation();
   const showProgress = loc.pathname.startsWith('/checklist') || loc.pathname === '/summary';
+  const showFilterChips = loc.pathname.startsWith('/checklist');
   const migrationWarning = useProgress((s) => s.migrationWarning);
   const dismissMigrationWarning = useProgress((s) => s.dismissMigrationWarning);
 
@@ -25,6 +27,11 @@ export function AppShell() {
         {showProgress && (
           <div className="mx-auto max-w-screen-md px-4 pb-3">
             <ProgressHeader />
+          </div>
+        )}
+        {showFilterChips && (
+          <div className="mx-auto max-w-screen-md px-4 pb-3">
+            <SeverityFilterChips />
           </div>
         )}
         {migrationWarning && (
