@@ -226,6 +226,8 @@ export default function ChecklistPage() {
               key={category.id}
               value={category.id}
               data-testid={`cat-${category.id}`}
+              id={`section-${category.id}`}
+              className="scroll-mt-40"
             >
               <AccordionTrigger>
                 <div className="flex flex-1 items-center justify-between gap-3 pr-2">

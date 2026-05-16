@@ -9,6 +9,7 @@ import {
   QrCode as QrIcon,
   Copy,
   Check,
+  Clock,
   PlayCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -33,7 +34,7 @@ import { InstallGuide } from '@/components/InstallGuide';
 import { getAppUrl } from '@/lib/appUrl';
 import { getTemplate, listTemplates } from '@/data/templates';
 import { useProgress } from '@/store/progress';
-import { severityFilterMeta } from '@/lib/checklistScope';
+import { getScopedStats, severityFilterMeta } from '@/lib/checklistScope';
 import { toast } from 'sonner';
 
 export default function HomePage() {
@@ -48,21 +49,31 @@ export default function HomePage() {
   const [copied, setCopied] = useState(false);
   const appUrl = getAppUrl();
 
-  // Calculate overall progress for resume CTA
-  const { totalItems, checkedItems } = useMemo(() => {
-    let total = 0;
-    let checked = 0;
-    for (const cat of template.categories) {
-      for (const item of cat.items) {
-        total++;
-        const st = snapshot.states[item.id]?.status;
-        if (st && st !== 'unchecked') checked++;
-      }
-    }
-    return { totalItems: total, checkedItems: checked };
+  // Calculate progress for the *current severity scope* — counting items
+  // outside the active filter would mislead users who only intend to check
+  // critical/standard items and would see "残り 51 件" even after finishing.
+  const { totalItems, checkedItems, isComplete, minutesTotal, minutesRemaining } = useMemo(() => {
+    const scoped = getScopedStats(template, snapshot, severityFilter);
+    return {
+      totalItems: scoped.total,
+      checkedItems: scoped.checked,
+      isComplete: scoped.total > 0 && scoped.checked === scoped.total,
+      minutesTotal: scoped.minutesTotal,
+      minutesRemaining: scoped.minutesRemaining,
+    };
+  }, [snapshot, template, severityFilter]);
+
+  // Also surface time estimates for each scope on the filter chips so users
+  // can pick the scope that fits their time budget on-site.
+  const scopeMinutes = useMemo(() => {
+    return {
+      critical: getScopedStats(template, snapshot, 'critical').minutesTotal,
+      standard: getScopedStats(template, snapshot, 'standard').minutesTotal,
+      all: getScopedStats(template, snapshot, 'all').minutesTotal,
+    };
   }, [snapshot, template]);
 
-  const hasProgress = checkedItems > 0 && lastCheckedItemId;
+  const hasProgress = checkedItems > 0 && lastCheckedItemId && !isComplete;
 
   async function copyLink() {
     try {
@@ -137,7 +148,7 @@ export default function HomePage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            忙しいときは重大項目だけに絞って開始できます。選択はこの端末に保存されます。
+            忙しいときは必須項目だけに絞って開始できます。選択はこの端末に保存されます。
           </p>
           <div className="grid gap-2 sm:grid-cols-3">
             {(['critical', 'standard', 'all'] as const).map((mode) => (
@@ -153,6 +164,10 @@ export default function HomePage() {
                 <p className="mt-1 text-xs text-muted-foreground">
                   {severityFilterMeta[mode].description}
                 </p>
+                <p className="mt-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground tabular">
+                  <Clock className="h-3 w-3" />
+                  約 {formatMinutes(scopeMinutes[mode])}
+                </p>
               </button>
             ))}
           </div>
@@ -160,12 +175,29 @@ export default function HomePage() {
       </Card>
 
       <div className="grid grid-cols-1 gap-3">
-        {hasProgress ? (
+        {isComplete ? (
+          <>
+            <Button asChild size="lg" variant="accent" className="h-14 text-base" data-testid="complete-cta">
+              <Link to="/report/preview">
+                <FileBarChart2 className="h-5 w-5" />
+                {severityFilter === 'all'
+                  ? '全項目チェック完了 — レポートを確認'
+                  : `${severityFilterMeta[severityFilter].label} 完了 — レポートを確認`}
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="text-xs text-muted-foreground">
+              <Link to="/checklist">
+                <ClipboardCheck className="h-4 w-4" /> 続けてチェック
+              </Link>
+            </Button>
+          </>
+        ) : hasProgress ? (
           <>
             <Button asChild size="lg" variant="accent" className="h-14 text-base" data-testid="resume-cta">
               <Link to="/checklist">
                 <PlayCircle className="h-5 w-5" />
-                前回の続きから ({checkedItems} 件目 / 残り {totalItems - checkedItems} 件)
+                前回の続きから ({checkedItems} / {totalItems} 件・残り 約 {formatMinutes(minutesRemaining)})
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </Button>
@@ -178,7 +210,9 @@ export default function HomePage() {
         ) : (
           <Button asChild size="lg" variant="accent" className="h-14 text-base">
             <Link to="/checklist">
-              <ClipboardCheck className="h-5 w-5" /> チェックを開始 <ArrowRight className="h-5 w-5" />
+              <ClipboardCheck className="h-5 w-5" />
+              チェックを開始 ({totalItems} 件・約 {formatMinutes(minutesTotal)})
+              <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
         )}
@@ -243,6 +277,13 @@ function Spec({ label, value }: { label: string; value: string }) {
       <dd className="mt-0.5 font-medium tabular">{value}</dd>
     </div>
   );
+}
+
+function formatMinutes(minutes: number): string {
+  if (minutes < 60) return `${minutes} 分`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m === 0 ? `${h} 時間` : `${h} 時間 ${m} 分`;
 }
 
 function Tip({

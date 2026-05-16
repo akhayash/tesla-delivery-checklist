@@ -3,6 +3,7 @@ import { AlertTriangle, X } from 'lucide-react';
 import { BottomNav } from './BottomNav';
 import { ProgressHeader } from './ProgressHeader';
 import { SeverityFilterChips } from './SeverityFilterChips';
+import { SectionNav } from './SectionNav';
 import { useProgress } from '@/store/progress';
 
 export function AppShell() {
@@ -32,6 +33,11 @@ export function AppShell() {
         {showFilterChips && (
           <div className="mx-auto max-w-screen-md px-4 pb-3">
             <SeverityFilterChips />
+          </div>
+        )}
+        {showFilterChips && (
+          <div className="mx-auto max-w-screen-md px-4 pb-2">
+            <SectionNav />
           </div>
         )}
         {migrationWarning && (

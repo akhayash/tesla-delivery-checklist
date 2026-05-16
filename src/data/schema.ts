@@ -9,7 +9,11 @@ export interface ChecklistItem {
   title: string;
   titleEn?: string;
   description?: string;
+  /** Plain-language definition of jargon used in the title (Tesla-specific or automotive terms). Shown via an (i) button. */
+  glossary?: string;
   severity?: Severity;
+  /** Estimated minutes to perform the check on-site. Falls back to a severity-based default if omitted. */
+  estimatedMinutes?: number;
   applicableTo?: string[];
   references?: string[];
 }

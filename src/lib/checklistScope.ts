@@ -12,18 +12,30 @@ export const severityFilterMeta: Record<
   { label: string; description: string }
 > = {
   critical: {
-    label: '最低限',
-    description: '重大のみ',
+    label: '必須項目',
+    description: '必須のみ',
   },
   standard: {
-    label: '標準',
-    description: '重大＋要対応',
+    label: '標準項目',
+    description: '必須＋標準',
   },
   all: {
     label: '全項目',
-    description: '軽微を含むすべて',
+    description: '任意を含むすべて',
   },
 };
+
+/** Severity-based fallback when an item has no explicit `estimatedMinutes`. */
+const SEVERITY_DEFAULT_MIN: Record<Severity, number> = {
+  critical: 3,
+  major: 2,
+  minor: 1,
+};
+
+export function itemMinutes(item: { severity?: Severity; estimatedMinutes?: number }): number {
+  if (typeof item.estimatedMinutes === 'number') return item.estimatedMinutes;
+  return SEVERITY_DEFAULT_MIN[item.severity ?? 'minor'];
+}
 
 export function includesSeverity(
   filter: SeverityFilter,
@@ -62,7 +74,13 @@ export function getScopedStats(
   snapshot: ChecklistSnapshot,
   filter: SeverityFilter
 ) {
-  const totals: Record<ItemStatus, number> & { total: number; checked: number; issues: number } = {
+  const totals: Record<ItemStatus, number> & {
+    total: number;
+    checked: number;
+    issues: number;
+    minutesTotal: number;
+    minutesRemaining: number;
+  } = {
     unchecked: 0,
     ok: 0,
     issue: 0,
@@ -70,14 +88,19 @@ export function getScopedStats(
     total: 0,
     checked: 0,
     issues: 0,
+    minutesTotal: 0,
+    minutesRemaining: 0,
   };
 
   for (const category of getScopedCategories(template, filter)) {
     for (const item of category.items) {
       const status = snapshot.states[item.id]?.status ?? 'unchecked';
+      const minutes = itemMinutes(item);
       totals[status]++;
       totals.total++;
+      totals.minutesTotal += minutes;
       if (status !== 'unchecked') totals.checked++;
+      else totals.minutesRemaining += minutes;
       if (status === 'issue') totals.issues++;
     }
   }

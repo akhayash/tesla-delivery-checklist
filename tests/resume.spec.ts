@@ -22,7 +22,7 @@ test.describe('クラッシュ復帰 UX', () => {
     // Resume CTA should now appear
     await expect(page.getByTestId('resume-cta')).toBeVisible();
     await expect(page.getByTestId('resume-cta')).toContainText('前回の続きから');
-    await expect(page.getByTestId('resume-cta')).toContainText('1 件目');
+    await expect(page.getByTestId('resume-cta')).toContainText('1 /');
   });
 
   test('チェックリストページにリロード後「前回の続きから」バナーが表示される', async ({ freshPage: page }) => {
