@@ -79,7 +79,7 @@ export default function HomePage() {
       <section>
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Inspection App</p>
         <h1 className="mt-2 text-3xl font-display font-light leading-tight">
-          Tesla 納車を、<br />落ち着いて確認しよう。
+          Tesla 納車を、<br />落ち着いて確認しましょう。
         </h1>
         <div className="mt-3 h-[3px] w-14 bg-accent" />
         <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
