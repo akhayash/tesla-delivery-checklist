@@ -41,7 +41,11 @@
               });
             });
             let refreshing = false;
+            const hadController = !!navigator.serviceWorker.controller;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
+              // Skip the initial clientsClaim controllerchange on first install,
+              // otherwise tests and first-time visitors get an unwanted reload.
+              if (!hadController) return;
               if (refreshing) return;
               refreshing = true;
               window.location.reload();

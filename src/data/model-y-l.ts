@@ -4,7 +4,7 @@ import type { ChecklistTemplate } from './schema';
  * Tesla Model Y L delivery checklist (v0.4).
  *
  * 出典 / 参考:
- * - Tesla Model Y L 公式スペック (中国市場) https://www.tesla.com/zh_CN/modely
+ * - Tesla Model Y L 公式スペック https://www.tesla.com/modely
  * - Tesla オーナーズマニュアル (車載スクリーン / Tesla 公式サイト)
  * - Tesla Motors Club / Reddit r/TeslaModelY 納車レポートまとめ
  * - Wikipedia: Tesla Model Y https://en.wikipedia.org/wiki/Tesla_Model_Y
@@ -18,6 +18,7 @@ import type { ChecklistTemplate } from './schema';
  * - int.steering に step-7 クロスリファレンスを追加
  * - 新規 7 項目追加: fn.12v-battery-health, int.headliner-trim, ext.tire-dot-date,
  *   fn.sentry-usb, fn.steering-pull-alignment, int.cabin-air-filter, fn.wireless-charging
+ * - 中国市場固有の記述を除去し、グローバル中立な内容に整理
  *
  * 注意: 仕様は変更される可能性があります。実車の納車時には最新の公式情報も
  * 併せてご確認ください。
@@ -28,7 +29,7 @@ export const modelYLTemplate: ChecklistTemplate = {
   modelNameJa: 'Tesla Model Y L (ロングホイールベース 6 人乗り)',
   version: '0.4.0',
   releasedAt: '2026-05',
-  market: '中国先行発売（2025 年中盤）',
+  market: '2025 年発売',
   specs: {
     wheelbaseMm: 3040,
     lengthMm: 4976,
@@ -70,14 +71,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.registration',
           title: '車検証 / 自賠責証明書がグローブボックスに常備されている',
           description:
-            '日本では車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書を物理的に車内 (グローブボックス) に常時携帯することが法律で義務 (道路運送車両法第 66 条)。デジタルのみの納車は不可。中国仕様では行驶证 (運転証) が車内、机动车登记证书 (緑本) は自宅保管。VIN・所有者氏名・住所が注文書と一致するか確認。',
+            '車検証 (2023 年以降は電子車検証 IC カード) と自賠責保険証明書を物理的に車内 (グローブボックス) に常時携帯することが法律で義務 (道路運送車両法第 66 条)。デジタルのみの納車は不可。VIN・所有者氏名・住所が注文書と一致するか確認。',
           severity: 'critical',
         },
         {
           id: 'doc.warranty',
-          title: '保証内容 (新車 / バッテリー) と三包凭证',
+          title: '保証内容 (新車 / バッテリー) の確認',
           description:
-            '中国仕様の基本保証は 4 年 / 8 万 km、駆動系・バッテリーは 8 年 / 19.2 万 km (容量保証 70%)。Tesla アカウントで電子確認できるか、加えて中国法定の物理三包凭证 (修理・交換・返品証明書) が同梱されているかも確認。',
+            '基本保証は 4 年 / 8 万 km、駆動系・バッテリーは 8 年 / 19.2 万 km (容量保証 70%)。Tesla アカウントで電子確認できるか、紙の保証書類が同梱されているかも確認。',
           severity: 'critical',
         },
         {
@@ -91,14 +92,14 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'doc.mobile-connector',
           title: 'モバイルコネクター / 充電アダプター (購入時のみ)',
           description:
-            'モバイルコネクターは Model Y L 中国仕様では標準付属ではない (別売)。注文時にオプション購入していた場合のみ同梱を確認。同梱されている場合は GB/T 規格のケーブルとアダプター類が揃っているか確認。',
+            'モバイルコネクターは Model Y L の標準付属ではない (別売)。注文時にオプション購入していた場合のみ同梱を確認。同梱されている場合はケーブル本体とアダプター類が注文どおりに揃っているか確認。',
           severity: 'major',
         },
         {
           id: 'doc.floormats',
           title: 'フロアマット (1・2 列目のみ、3 列目はない)',
           description:
-            '前列・2 列目用マットの有無を確認。3 列目用マットは付属しない仕様。マット類は中国 Tesla では別売アクセサリーが基本のため、注文書記載の枚数と実物を必ず照合する。',
+            '前列・2 列目用マットの有無を確認。3 列目用マットは付属しない仕様。マット類は別売アクセサリー扱いの場合があるため、注文書記載の枚数と実物を必ず照合する。',
           severity: 'minor',
         },
         {
@@ -565,7 +566,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.sentry-dogmode',
           title: 'Sentry Mode / Dog Mode / Camp Mode',
           description:
-            'すべて起動できるか、カメラ映像が正常に保存されるかを確認。中国では政府施設や軍事エリア付近で Sentry Mode が自動無効化される場合がある (中国サイバーセキュリティ法対応)。',
+            'すべて起動できるか、カメラ映像が正常に保存されるかを確認。地域・施設によっては Sentry Mode が自動無効化される場合があることも認識しておく。',
           severity: 'minor',
         },
         {
@@ -600,9 +601,9 @@ export const modelYLTemplate: ChecklistTemplate = {
         },
         {
           id: 'fn.supercharger',
-          title: 'スーパーチャージャー試し充電 (GB/T・最大 250 kW)',
+          title: 'スーパーチャージャー試し充電 (最大 250 kW)',
           description:
-            'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。中国では V3 が主流、V4 (500 kW キャビネット) は 2025 年 6 月から段階展開中。GB/T DC コネクタで開始 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
+            'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。V4 (500 kW キャビネット) は 2025 年から段階展開中。コネクタを接続してから 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
           severity: 'major',
         },
         {
@@ -653,7 +654,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'sw.locale',
           title: '言語 / 地域 / 単位設定',
           description:
-            'Model Y L (中国仕様) は中国語と英語の UI のみ。日本語 UI は非対応 (グレー輸入車であっても OTA で切替不可)。距離 km・時刻 24h など基本設定を確認。',
+            '車載 UI の利用可能言語を確認し、距離 (km / mile)・時刻 (24h / 12h) などの基本設定が希望どおりかを確認。',
           severity: 'minor',
         },
         {
