@@ -59,29 +59,31 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
         <ToggleGroup
           type="single"
           value={status === 'unchecked' ? '' : status}
-          onValueChange={(v) =>
-            setStatus(item.id, ((v as ItemStatus) || 'unchecked') as ItemStatus)
-          }
+          onValueChange={(v) => {
+            const nextStatus = ((v as ItemStatus) || 'unchecked') as ItemStatus;
+            setStatus(item.id, nextStatus);
+            if (nextStatus !== status) navigator.vibrate?.(10);
+          }}
           className="w-full"
           variant="outline"
         >
           <ToggleGroupItem
             value="ok"
-            className="flex-1 data-[state=on]:bg-success data-[state=on]:text-success-foreground"
+            className="min-h-11 flex-1 active:scale-95 transition-transform data-[state=on]:bg-success data-[state=on]:text-success-foreground"
             aria-label="OK"
           >
             <CheckCircle2 className="h-4 w-4" /> OK
           </ToggleGroupItem>
           <ToggleGroupItem
             value="issue"
-            className="flex-1 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+            className="min-h-11 flex-1 active:scale-95 transition-transform data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
             aria-label="問題あり"
           >
             <AlertTriangle className="h-4 w-4" /> 問題
           </ToggleGroupItem>
           <ToggleGroupItem
             value="na"
-            className="flex-1 data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground"
+            className="min-h-11 flex-1 active:scale-95 transition-transform data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground"
             aria-label="対象外"
           >
             <MinusCircle className="h-4 w-4" /> 対象外
@@ -101,6 +103,7 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
             value={note}
             onChange={(e) => setNote(item.id, e.target.value)}
             rows={2}
+            className="min-h-11"
             data-testid={`note-${item.id}`}
           />
           <MediaCapture itemId={item.id} mediaIds={mediaIds} />

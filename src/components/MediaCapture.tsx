@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Camera, Film, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { resizeImage } from '@/lib/imageResize';
 import { saveMedia, getMedia, deleteMedia, type StoredMedia } from '@/store/media';
 import { useProgress } from '@/store/progress';
@@ -17,6 +27,7 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
   const removeMedia = useProgress((s) => s.removeMedia);
   const [busy, setBusy] = useState(false);
   const [media, setMedia] = useState<StoredMedia[]>([]);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -77,7 +88,7 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         <label className="contents">
-          <Button asChild variant="accent" size="sm" disabled={busy}>
+          <Button asChild variant="accent" size="default" className="min-h-11" disabled={busy}>
             <span>
               <Camera className="h-4 w-4" /> 写真を撮る
               <input
@@ -93,7 +104,7 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
           </Button>
         </label>
         <label className="contents">
-          <Button asChild variant="outline" size="sm" disabled={busy}>
+          <Button asChild variant="outline" size="default" className="min-h-11" disabled={busy}>
             <span>
               <Film className="h-4 w-4" /> 動画を撮る
               <input
@@ -107,7 +118,7 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
           </Button>
         </label>
         <label className="contents">
-          <Button asChild variant="ghost" size="sm" disabled={busy}>
+          <Button asChild variant="ghost" size="default" className="min-h-11" disabled={busy}>
             <span>
               <ImageIcon className="h-4 w-4" /> ライブラリ
               <input
@@ -135,10 +146,35 @@ export function MediaCapture({ itemId, mediaIds }: Props) {
       {media.length > 0 && (
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="media-grid">
           {media.map((m) => (
-            <MediaThumbnail key={m.id} media={m} onDelete={() => handleRemove(m.id)} />
+            <MediaThumbnail key={m.id} media={m} onDelete={() => setPendingDeleteId(m.id)} />
           ))}
         </div>
       )}
+      <AlertDialog
+        open={Boolean(pendingDeleteId)}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeleteId(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>このメディアを削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>削除すると元に戻せません</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                if (!pendingDeleteId) return;
+                await handleRemove(pendingDeleteId);
+                setPendingDeleteId(null);
+              }}
+            >
+              削除する
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
