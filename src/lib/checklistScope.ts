@@ -25,11 +25,18 @@ export const severityFilterMeta: Record<
   },
 };
 
-/** Severity-based fallback when an item has no explicit `estimatedMinutes`. */
+/**
+ * Severity-based fallback when an item has no explicit `estimatedMinutes`.
+ *
+ * Calibrated for an *experienced* owner doing a quick visual / functional
+ * scan — not a perfectionist hour-long inspection. Most items take only
+ * 10–30 seconds (glance, press, record), and longer tasks override
+ * explicitly via `estimatedMinutes`.
+ */
 const SEVERITY_DEFAULT_MIN: Record<Severity, number> = {
-  critical: 3,
-  major: 2,
-  minor: 1,
+  critical: 0.5,
+  major: 0.3,
+  minor: 0.2,
 };
 
 export function itemMinutes(item: { severity?: Severity; estimatedMinutes?: number }): number {

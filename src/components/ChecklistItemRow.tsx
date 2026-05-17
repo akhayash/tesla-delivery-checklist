@@ -65,10 +65,10 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
             </h4>
             <span
               className="inline-flex items-center gap-1 text-[10px] text-muted-foreground"
-              aria-label={`所要時間 約 ${itemMinutes(item)} 分`}
+              aria-label={`所要時間 約 ${formatItemMinutes(itemMinutes(item))}`}
             >
               <Clock className="h-3 w-3" />
-              {itemMinutes(item)} 分
+              {formatItemMinutes(itemMinutes(item))}
             </span>
           </div>
           {item.glossary && glossaryOpen && (
@@ -143,4 +143,12 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
       )}
     </div>
   );
+}
+
+function formatItemMinutes(minutes: number): string {
+  if (minutes < 1) {
+    const sec = Math.max(10, Math.round(minutes * 60 / 5) * 5);
+    return `${sec}秒`;
+  }
+  return `${Math.round(minutes)}分`;
 }
