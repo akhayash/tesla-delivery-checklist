@@ -10,6 +10,12 @@ import type { ChecklistTemplate } from './schema';
  * - Wikipedia: Tesla Model Y https://en.wikipedia.org/wiki/Tesla_Model_Y
  * - 国内 Tesla オーナーコミュニティ「納車時の見逃しトップ 10」集計
  *
+ * v0.5 変更点:
+ * - 新規セクション step-11-etc（その他）を追加
+ *   - etc.steering-column-cover: ステアリングコラム上カバーの組付け確認
+ *   - etc.rear-hatch-stroke: リアハッチ自動停止位置のメモリ設定
+ *   - etc.dashboard-material: ダッシュボード素材の仕上がり確認
+ *
  * v0.4 変更点:
  * - yl.row3-belts を削除し fn.seatbelts の説明を全 6 席対応に拡張
  * - doc.warranty / ext.wheel-covers を critical に格上げ
@@ -27,7 +33,7 @@ export const modelYLTemplate: ChecklistTemplate = {
   modelId: 'model-y-l',
   modelName: 'Tesla Model Y L',
   modelNameJa: 'Tesla Model Y L (ロングホイールベース 6 人乗り)',
-  version: '0.4.0',
+  version: '0.5.0',
   releasedAt: '2026-05',
   market: '2025 年発売',
   specs: {
@@ -731,6 +737,36 @@ export const modelYLTemplate: ChecklistTemplate = {
           description:
             '日本では適用外の場合あり。最新の規約を確認。',
           severity: 'major',
+        },
+      ],
+    },
+    {
+      id: 'step-11-etc',
+      title: '11. その他',
+      icon: 'MoreHorizontal',
+      locationHint:
+        '上記ステップで触れなかった細部をまとめて最終確認。気になる点があればその場で Due Bill に追記。',
+      items: [
+        {
+          id: 'etc.steering-column-cover',
+          title: 'ステアリングコラム上カバーの組付け確認',
+          description:
+            'ステアリングコラム上部のカバーに浮き・隙間・ステッカー残存・未接続コネクターがないかを指で押して確認。組付けが甘いと走行振動で異音が発生する事例が TMC で報告されている。カバーを軽く揺すり、カタつきがあれば Due Bill に記録。所要 1 分。',
+          severity: 'minor',
+        },
+        {
+          id: 'etc.rear-hatch-stroke',
+          title: 'リアハッチ自動停止位置のメモリ設定',
+          description:
+            'リアハッチを希望の開口高さ (低天井駐車場でも当たらない位置) に手動で止め、ハッチ内側の「現在の位置を保存」ボタンをタップして停止位置を登録。デフォルトのフル開位置は立体駐車場で天井に当たる場合がある。設定後は実際に自動開閉させて停止位置を確認。所要 2 分。',
+          severity: 'minor',
+        },
+        {
+          id: 'etc.dashboard-material',
+          title: 'ダッシュボード素材の仕上がり確認',
+          description:
+            'ダッシュボード前面のアルカンターラ調素材やソフトパッドの接着・縫製部分に剥がれ・浮き・気泡がないかを全幅にわたって確認。特に助手席前面パネルの角とエアアウトレット周囲が浮きやすいと TMC・Reddit で報告あり。問題があれば写真撮影のうえ Due Bill に記録。所要 2 分。',
+          severity: 'minor',
         },
       ],
     },
