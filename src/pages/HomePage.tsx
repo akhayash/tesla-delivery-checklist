@@ -101,45 +101,51 @@ export default function HomePage() {
       </section>
 
       <Card>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="vehicle-info" className="border-b-0">
-            <AccordionTrigger className="px-6 py-4 text-sm font-medium" data-testid="vehicle-info-trigger">
-              車両情報
-            </AccordionTrigger>
-            <AccordionContent className="px-6">
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <p className="font-display text-lg">{template.modelNameJa}</p>
-                  <p className="text-xs text-muted-foreground">
-                    テンプレート v{template.version}
-                    {template.market && <> · {template.market}</>}
-                  </p>
-                </div>
-                {template.specs && (
-                  <dl className="grid grid-cols-2 gap-2 text-xs">
+        <CardContent className="space-y-3 p-4 sm:p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">対象車両</p>
+              <p className="mt-0.5 font-display text-lg leading-tight">{template.modelNameJa}</p>
+            </div>
+            {templates.length > 1 && (
+              <button
+                onClick={() => {
+                  const next = templates.find((t) => t.modelId !== modelId);
+                  if (next) switchModel(next.modelId);
+                }}
+                className="text-[11px] text-muted-foreground underline decoration-muted-foreground/40 underline-offset-2 hover:text-foreground"
+                data-testid="vehicle-switch"
+              >
+                車種を変更
+              </button>
+            )}
+          </div>
+          {template.specs && (
+            <Accordion type="single" collapsible>
+              <AccordionItem value="specs" className="border-b-0">
+                <AccordionTrigger
+                  className="py-1 text-[11px] font-normal text-muted-foreground hover:no-underline"
+                  data-testid="vehicle-info-trigger"
+                >
+                  詳細スペックを表示
+                </AccordionTrigger>
+                <AccordionContent>
+                  <dl className="mt-1 grid grid-cols-2 gap-2 text-xs">
                     <Spec label="ホイールベース" value={`${template.specs.wheelbaseMm} mm`} />
                     <Spec label="全長×全幅×全高" value={`${template.specs.lengthMm} × ${template.specs.widthMm} × ${template.specs.heightMm} mm`} />
                     <Spec label="車重" value={`約 ${template.specs.curbWeightKg} kg`} />
                     <Spec label="乗車定員" value={`${template.specs.seats} 名`} />
                     <Spec label="駆動" value={template.specs.drivetrain ?? '—'} />
                   </dl>
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {templates.map((t) => (
-                    <button
-                      key={t.modelId}
-                      onClick={() => switchModel(t.modelId)}
-                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-accent hover:text-foreground data-[active=true]:border-accent data-[active=true]:text-accent"
-                      data-active={t.modelId === modelId}
-                    >
-                      {t.modelName}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+                  <p className="mt-2 text-[10px] text-muted-foreground">
+                    テンプレート v{template.version}
+                    {template.market && <> · {template.market}</>}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+        </CardContent>
       </Card>
 
       <Card>

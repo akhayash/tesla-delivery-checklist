@@ -54,6 +54,7 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
                   type="button"
                   onClick={() => setGlossaryOpen((v) => !v)}
                   aria-expanded={glossaryOpen}
+                  aria-controls={`glossary-${item.id}`}
                   aria-label="用語の説明を見る"
                   className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   data-testid={`glossary-trigger-${item.id}`}
@@ -72,8 +73,10 @@ export function ChecklistItemRow({ item }: { item: ChecklistItem }) {
           </div>
           {item.glossary && glossaryOpen && (
             <p
+              id={`glossary-${item.id}`}
               className="mt-1.5 rounded-md border border-border/60 bg-secondary/30 px-2.5 py-1.5 text-[11px] leading-relaxed text-muted-foreground"
               data-testid={`glossary-${item.id}`}
+              role="region"
             >
               <span className="font-medium text-foreground">用語: </span>
               {item.glossary}

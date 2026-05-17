@@ -102,13 +102,17 @@ export function SectionNav() {
 /**
  * Convert "3. 外装ウォークアラウンド (フロント ▸ …)" to "3. 外装" for chip
  * display. We keep the leading numbering if present, otherwise inject one.
+ * Splits at parenthesis or arrow delimiters but preserves internal spaces
+ * (Japanese titles use ASCII spaces between number suffix and the noun,
+ * e.g. "2 列目").
  */
 function compactTitle(full: string, fallbackNum: number): string {
-  // Pull a leading "N." marker if present.
   const numMatch = full.match(/^\s*(\d+)\s*\.\s*(.*)$/);
   const n = numMatch ? numMatch[1] : String(fallbackNum);
   const rest = numMatch ? numMatch[2] : full;
   // Trim at the first delimiter that signals supplementary info.
-  const truncated = rest.split(/[（(:：・\s]/)[0] ?? rest;
-  return `${n}. ${truncated.trim()}`;
+  const truncated = rest.split(/[（(:：▸&/]/)[0] ?? rest;
+  // Collapse runs of whitespace and trim ends.
+  const compact = truncated.replace(/\s+/g, ' ').trim();
+  return `${n}. ${compact}`;
 }

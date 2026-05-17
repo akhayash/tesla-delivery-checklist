@@ -20,7 +20,7 @@ test('HTML レポートに QR コードと URL が埋め込まれる', async ({ 
   // Bottom nav "レポート" goes to /#/summary; Summary has the preview entry.
   await page.getByRole('link', { name: 'レポート' }).click();
   await page.getByTestId('preview-btn').click();
-  await expect(page.getByTestId('preview-iframe')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('preview-native')).toBeVisible({ timeout: 15000 });
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByTestId('preview-download-html').click(),

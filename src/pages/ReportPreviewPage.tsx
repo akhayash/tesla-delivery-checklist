@@ -125,7 +125,7 @@ export default function ReportPreviewPage() {
       </div>
 
       {/* Native React preview */}
-      <div ref={previewRef} className="flex-1" data-testid="preview-iframe">
+      <div ref={previewRef} className="flex-1" data-testid="preview-native">
         {busy && (
           <p className="p-4 text-sm text-muted-foreground">レポートを生成中...</p>
         )}
