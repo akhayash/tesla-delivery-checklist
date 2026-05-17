@@ -229,7 +229,6 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'ext.frame-alignment',
           title: 'フレーム・ピラー整合 (対角線チェック・オーナー実施)',
           glossary: 'ピラー = ルーフを支える柱。フロントから A・B・C ピラーと呼ぶ。対角線計測でフレームの歪みを検出する。',
-          estimatedMinutes: 8,
           description:
             '4 枚のドア開口部それぞれで、対角線 (左上⇄右下、右上⇄左下) を金属メジャーで計測し、左右の差が 5 mm 以内か確認。計測点はドア開口部の角 (ウェザーストリップの内側、ピラーとシルが交わるコーナー部) を左右同じ位置に揃えるのがコツ。Tesla の納車プロセスにはこの計測は含まれないため、オーナー自身または第三者の納車検査サービスが実施する。差が 5 mm を超える場合はフレーム歪みの可能性があり、最重要欠陥として写真記録した上で受領前に必ず指摘すること。',
           severity: 'critical',
@@ -472,7 +471,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         {
           id: 'int.movable-parts',
           title: '"動くもの全部動かす" 巡回確認 (グローブ／コンソール／カップ／ドアポケット)',
-          estimatedMinutes: 5,
+          estimatedMinutes: 2,
           description:
             'ここまでで触れていない可動部をひと通り動かす最終チェック。具体的には (1) グローブボックスの開閉・キーロック・ダンパー減衰、(2) センターコンソール上下段の収納フタとスライドカップホルダー、(3) リアアームレストの引き出しとカップホルダー、(4) フロント／リアのドアポケット内のラバーマット浮き、(5) フランク内サブトランク蓋、(6) 後席シートポケットの縫製。可動部に違和感があれば次の工程に進む前にメモ。原則「動かせるものは全部一度動かす」スタイルで漏れを防ぐ。所要 3 分。',
           severity: 'major',
@@ -619,7 +618,7 @@ export const modelYLTemplate: ChecklistTemplate = {
         {
           id: 'fn.drive-feel',
           title: '走行違和感・回生ブレーキ・直進安定性',
-          estimatedMinutes: 10,
+          estimatedMinutes: 5,
           description:
             '低速でのきしみ、異音、ハンドルセンター、回生のつながり方を確認。',
           severity: 'major',
@@ -635,7 +634,7 @@ export const modelYLTemplate: ChecklistTemplate = {
           id: 'fn.supercharger',
           title: 'スーパーチャージャー試し充電 (最大 250 kW)',
           glossary: 'Supercharger = Tesla 専用の急速充電ネットワーク。V3 が 250 kW 上限、V4 (500 kW キャビネット) は 2025 年から段階展開中。料金は車載スクリーンと Tesla アプリで確認できる。',
-          estimatedMinutes: 15,
+          estimatedMinutes: 5,
           description:
             'Model Y L のピーク充電は 250 kW (Tesla V3 Supercharger 規格上限と一致)。V4 (500 kW キャビネット) は 2025 年から段階展開中。コネクタを接続してから 60 秒以内に充電開始するか、充電カーブが想定値か、車載画面の表示が正常かを確認。',
           severity: 'major',

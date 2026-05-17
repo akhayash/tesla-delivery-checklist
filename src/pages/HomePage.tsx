@@ -286,9 +286,14 @@ function Spec({ label, value }: { label: string; value: string }) {
 }
 
 function formatMinutes(minutes: number): string {
-  if (minutes < 60) return `${minutes} 分`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
+  if (minutes < 1) {
+    const sec = Math.max(10, Math.round(minutes * 60 / 5) * 5);
+    return `${sec} 秒`;
+  }
+  const rounded = Math.round(minutes);
+  if (rounded < 60) return `${rounded} 分`;
+  const h = Math.floor(rounded / 60);
+  const m = rounded % 60;
   return m === 0 ? `${h} 時間` : `${h} 時間 ${m} 分`;
 }
 
